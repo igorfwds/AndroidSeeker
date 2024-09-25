@@ -1,0 +1,432 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */; };
+		F92EA61D2CA1E4DE00218337 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61C2CA1E4DE00218337 /* ContentView.swift */; };
+		F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA61E2CA1E4E000218337 /* Assets.xcassets */; };
+		F92EA6222CA1E4E000218337 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA6212CA1E4E000218337 /* Preview Assets.xcassets */; };
+		F92EA62C2CA1F0E100218337 /* functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA62B2CA1F0E100218337 /* functions.swift */; };
+		F998FDED2CA47D970024B2CC /* Structures.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDEC2CA47D970024B2CC /* Structures.swift */; };
+		F998FDEF2CA481450024B2CC /* DeviceListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDEE2CA481450024B2CC /* DeviceListItemView.swift */; };
+		F998FDF12CA481630024B2CC /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDF02CA481630024B2CC /* DeviceListView.swift */; };
+		F998FDF62CA484530024B2CC /* DeviceListTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDF52CA484530024B2CC /* DeviceListTitleView.swift */; };
+		F998FDF92CA484BC0024B2CC /* AppHeaderTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDF82CA484BC0024B2CC /* AppHeaderTitleView.swift */; };
+		F998FDFB2CA484D70024B2CC /* AppHeaderRefreshButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDFA2CA484D70024B2CC /* AppHeaderRefreshButtonView.swift */; };
+		F998FDFD2CA486BC0024B2CC /* AppHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDFC2CA486BC0024B2CC /* AppHeaderView.swift */; };
+		F998FE002CA496BC0024B2CC /* DeviceInternView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDFF2CA496BC0024B2CC /* DeviceInternView.swift */; };
+		F998FE022CA496DD0024B2CC /* DeviceInternListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FE012CA496DD0024B2CC /* DeviceInternListView.swift */; };
+		F998FE042CA4970A0024B2CC /* DeviceInternListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FE032CA4970A0024B2CC /* DeviceInternListItemView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidSeeker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidSeekerApp.swift; sourceTree = "<group>"; };
+		F92EA61C2CA1E4DE00218337 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F92EA61E2CA1E4E000218337 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F92EA6212CA1E4E000218337 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F92EA6232CA1E4E000218337 /* AndroidSeeker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AndroidSeeker.entitlements; sourceTree = "<group>"; };
+		F92EA62B2CA1F0E100218337 /* functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = functions.swift; sourceTree = "<group>"; };
+		F998FDEC2CA47D970024B2CC /* Structures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structures.swift; sourceTree = "<group>"; };
+		F998FDEE2CA481450024B2CC /* DeviceListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListItemView.swift; sourceTree = "<group>"; };
+		F998FDF02CA481630024B2CC /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
+		F998FDF52CA484530024B2CC /* DeviceListTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListTitleView.swift; sourceTree = "<group>"; };
+		F998FDF82CA484BC0024B2CC /* AppHeaderTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderTitleView.swift; sourceTree = "<group>"; };
+		F998FDFA2CA484D70024B2CC /* AppHeaderRefreshButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderRefreshButtonView.swift; sourceTree = "<group>"; };
+		F998FDFC2CA486BC0024B2CC /* AppHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHeaderView.swift; sourceTree = "<group>"; };
+		F998FDFF2CA496BC0024B2CC /* DeviceInternView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternView.swift; sourceTree = "<group>"; };
+		F998FE012CA496DD0024B2CC /* DeviceInternListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternListView.swift; sourceTree = "<group>"; };
+		F998FE032CA4970A0024B2CC /* DeviceInternListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternListItemView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F92EA6142CA1E4DE00218337 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F92EA60E2CA1E4DE00218337 = {
+			isa = PBXGroup;
+			children = (
+				F92EA6192CA1E4DE00218337 /* AndroidSeeker */,
+				F92EA6182CA1E4DE00218337 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F92EA6182CA1E4DE00218337 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F92EA6192CA1E4DE00218337 /* AndroidSeeker */ = {
+			isa = PBXGroup;
+			children = (
+				F998FDF22CA483A90024B2CC /* App */,
+				F998FDF72CA484950024B2CC /* AppHeader */,
+				F998FDF32CA483C80024B2CC /* DeviceList */,
+				F998FDFE2CA4967D0024B2CC /* DeviceInternView */,
+				F998FDF42CA483F60024B2CC /* Model */,
+				F92EA61E2CA1E4E000218337 /* Assets.xcassets */,
+				F92EA6232CA1E4E000218337 /* AndroidSeeker.entitlements */,
+				F92EA6202CA1E4E000218337 /* Preview Content */,
+			);
+			path = AndroidSeeker;
+			sourceTree = "<group>";
+		};
+		F92EA6202CA1E4E000218337 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				F92EA6212CA1E4E000218337 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F998FDF22CA483A90024B2CC /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F92EA61C2CA1E4DE00218337 /* ContentView.swift */,
+				F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F998FDF32CA483C80024B2CC /* DeviceList */ = {
+			isa = PBXGroup;
+			children = (
+				F998FDF52CA484530024B2CC /* DeviceListTitleView.swift */,
+				F998FDF02CA481630024B2CC /* DeviceListView.swift */,
+				F998FDEE2CA481450024B2CC /* DeviceListItemView.swift */,
+			);
+			path = DeviceList;
+			sourceTree = "<group>";
+		};
+		F998FDF42CA483F60024B2CC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F92EA62B2CA1F0E100218337 /* functions.swift */,
+				F998FDEC2CA47D970024B2CC /* Structures.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		F998FDF72CA484950024B2CC /* AppHeader */ = {
+			isa = PBXGroup;
+			children = (
+				F998FDFC2CA486BC0024B2CC /* AppHeaderView.swift */,
+				F998FDF82CA484BC0024B2CC /* AppHeaderTitleView.swift */,
+				F998FDFA2CA484D70024B2CC /* AppHeaderRefreshButtonView.swift */,
+			);
+			path = AppHeader;
+			sourceTree = "<group>";
+		};
+		F998FDFE2CA4967D0024B2CC /* DeviceInternView */ = {
+			isa = PBXGroup;
+			children = (
+				F998FDFF2CA496BC0024B2CC /* DeviceInternView.swift */,
+				F998FE012CA496DD0024B2CC /* DeviceInternListView.swift */,
+				F998FE032CA4970A0024B2CC /* DeviceInternListItemView.swift */,
+			);
+			path = DeviceInternView;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F92EA6162CA1E4DE00218337 /* AndroidSeeker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F92EA6262CA1E4E000218337 /* Build configuration list for PBXNativeTarget "AndroidSeeker" */;
+			buildPhases = (
+				F92EA6132CA1E4DE00218337 /* Sources */,
+				F92EA6142CA1E4DE00218337 /* Frameworks */,
+				F92EA6152CA1E4DE00218337 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AndroidSeeker;
+			productName = AndroidSeeker;
+			productReference = F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F92EA60F2CA1E4DE00218337 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					F92EA6162CA1E4DE00218337 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = F92EA6122CA1E4DE00218337 /* Build configuration list for PBXProject "AndroidSeeker" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F92EA60E2CA1E4DE00218337;
+			productRefGroup = F92EA6182CA1E4DE00218337 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F92EA6162CA1E4DE00218337 /* AndroidSeeker */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F92EA6152CA1E4DE00218337 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F92EA6222CA1E4E000218337 /* Preview Assets.xcassets in Resources */,
+				F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F92EA6132CA1E4DE00218337 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F998FE042CA4970A0024B2CC /* DeviceInternListItemView.swift in Sources */,
+				F998FDF12CA481630024B2CC /* DeviceListView.swift in Sources */,
+				F92EA61D2CA1E4DE00218337 /* ContentView.swift in Sources */,
+				F998FDF92CA484BC0024B2CC /* AppHeaderTitleView.swift in Sources */,
+				F998FDFB2CA484D70024B2CC /* AppHeaderRefreshButtonView.swift in Sources */,
+				F998FDEF2CA481450024B2CC /* DeviceListItemView.swift in Sources */,
+				F998FDFD2CA486BC0024B2CC /* AppHeaderView.swift in Sources */,
+				F998FE002CA496BC0024B2CC /* DeviceInternView.swift in Sources */,
+				F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */,
+				F998FE022CA496DD0024B2CC /* DeviceInternListView.swift in Sources */,
+				F92EA62C2CA1F0E100218337 /* functions.swift in Sources */,
+				F998FDF62CA484530024B2CC /* DeviceListTitleView.swift in Sources */,
+				F998FDED2CA47D970024B2CC /* Structures.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F92EA6242CA1E4E000218337 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F92EA6252CA1E4E000218337 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		F92EA6272CA1E4E000218337 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AndroidSeeker/AndroidSeeker.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = igor.cesar.learning.AndroidSeeker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F92EA6282CA1E4E000218337 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AndroidSeeker/AndroidSeeker.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = igor.cesar.learning.AndroidSeeker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F92EA6122CA1E4DE00218337 /* Build configuration list for PBXProject "AndroidSeeker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F92EA6242CA1E4E000218337 /* Debug */,
+				F92EA6252CA1E4E000218337 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F92EA6262CA1E4E000218337 /* Build configuration list for PBXNativeTarget "AndroidSeeker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F92EA6272CA1E4E000218337 /* Debug */,
+				F92EA6282CA1E4E000218337 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F92EA60F2CA1E4DE00218337 /* Project object */;
+}
