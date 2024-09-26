@@ -13,10 +13,10 @@ struct AppHeaderRefreshButtonView: View {
     var body: some View {
         HStack {
             Button(action: {
+                let result = runADBDevices()
                 withAnimation(.linear(duration: 1.0)) {
                     rotationAngle += 360
                 }
-                let result = runADBDevices()
             }) {
                 Image(systemName: "arrow.clockwise")
                     .font(.title3)

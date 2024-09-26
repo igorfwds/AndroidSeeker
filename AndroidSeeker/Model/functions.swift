@@ -11,7 +11,9 @@ var devices: [Device] = []
 
 func runADBDevices() -> String{
     let task = Process()
-    task.executableURL = URL(fileURLWithPath: "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb") 
+//    let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
+    let taskURL = "/opt/homebrew/bin/adb"
+    task.executableURL = URL(fileURLWithPath: taskURL)
     task.arguments = ["devices"]
     
     var env = ProcessInfo.processInfo.environment
@@ -57,7 +59,9 @@ func runADBDevices() -> String{
 
 func runLsCommand(device: Device) -> [String] {
     let task = Process()
-    task.executableURL = URL(fileURLWithPath: "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb")
+    let taskURL = "/opt/homebrew/bin/adb"
+//    let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
+    task.executableURL = URL(fileURLWithPath: taskURL)
     task.arguments = ["-s", device.name, "shell", "ls"]
 
     var env = ProcessInfo.processInfo.environment

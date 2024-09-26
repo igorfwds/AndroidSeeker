@@ -12,13 +12,10 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            AppHeaderView()
             ScrollView{
+                AppHeaderView()
                 DeviceListView()
             }
-            
-            
-
             
         }
         .padding()
