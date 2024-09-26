@@ -12,8 +12,8 @@ struct DeviceListView: View {
     var body: some View {
         NavigationStack {
             VStack (alignment: .leading, spacing: 30)  {
-                ForEach(deviceMock) { dev in
-                    NavigationLink(destination: DeviceInternView()){
+                ForEach(devices) { dev in
+                    NavigationLink(destination: DeviceInternView(device: dev)){
                         Button( action: {
                             let deviceFiles = runLsCommand(device: dev)
                         }) {

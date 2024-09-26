@@ -93,5 +93,5 @@ func runLsCommand(device: Device) -> [String] {
         print("Erro ao rodar adb: \(error)")
     }
 
-    return []
+    return ["Nenhum Dispositivo Encontrado"]
 }
