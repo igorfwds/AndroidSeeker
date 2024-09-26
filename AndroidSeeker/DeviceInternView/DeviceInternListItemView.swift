@@ -19,6 +19,7 @@ struct DeviceInternListItemView: View {
                 .cornerRadius(10)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding([.top, .leading, .trailing])
+                .foregroundColor(.blue)
             Text(file.fileName)
                 .font(.system(size: 10))
                 .fontWeight(.bold)

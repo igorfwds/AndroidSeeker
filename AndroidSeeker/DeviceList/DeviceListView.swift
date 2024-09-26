@@ -12,11 +12,13 @@ struct DeviceListView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 30) {
-                ForEach(devices) { dev in
+                Button("printar"){
+                    print(devices)
+                }
+                ForEach(deviceMock) { dev in
                     NavigationLink(destination: DeviceInternView(device: dev)) {
                         DeviceListItemView(device: dev)
                     }
-                    // Executa a ação de rodar o comando ao mesmo tempo que a navegação, sem adicionar efeito de botão
                     .onTapGesture {
                         let deviceFiles = runLsCommand(device: dev)
 //                        if deviceFiles.isEmpty {

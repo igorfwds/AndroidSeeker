@@ -9,10 +9,10 @@ import Foundation
 
 var devices: [Device] = []
 
-func runADBDevices() -> String{
+func runADBDevices() -> String {
     let task = Process()
-//    let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
-    let taskURL = "/opt/homebrew/bin/adb"
+    let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
+//    let taskURL = "/opt/homebrew/bin/adb"
     task.executableURL = URL(fileURLWithPath: taskURL)
     task.arguments = ["devices"]
     
@@ -46,6 +46,8 @@ func runADBDevices() -> String{
             }
         }
         
+//        print(devices)
+        
         if !errorOutput.isEmpty {
             return("Erros do comando:\n\(errorOutput)")
         }
@@ -59,8 +61,8 @@ func runADBDevices() -> String{
 
 func runLsCommand(device: Device) -> [String] {
     let task = Process()
-    let taskURL = "/opt/homebrew/bin/adb"
-//    let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
+//    let taskURL = "/opt/homebrew/bin/adb"
+    let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
     task.executableURL = URL(fileURLWithPath: taskURL)
     task.arguments = ["-s", device.name, "shell", "ls"]
 
@@ -86,8 +88,10 @@ func runLsCommand(device: Device) -> [String] {
 
         if !output.isEmpty {
             let directories = output.split(separator: "\n").map(String.init)
+            print(directories)
             return directories
         }
+        
 
         if !errorOutput.isEmpty {
             print("Erros do comando:\n\(errorOutput)")
@@ -97,5 +101,5 @@ func runLsCommand(device: Device) -> [String] {
         print("Erro ao rodar adb: \(error)")
     }
 
-    return ["Nenhum Dispositivo Encontrado"]
+    return []
 }

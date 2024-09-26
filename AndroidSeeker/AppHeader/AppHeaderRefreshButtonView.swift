@@ -13,7 +13,8 @@ struct AppHeaderRefreshButtonView: View {
     var body: some View {
         HStack {
             Button(action: {
-                let result = runADBDevices()
+                let _ = runADBDevices()
+                print(devices)
                 withAnimation(.linear(duration: 1.0)) {
                     rotationAngle += 360
                 }

@@ -1,54 +1,61 @@
 {
   "images" : [
     {
-      "filename" : "AndroidSeekerLogo.jpeg",
+      "filename" : "Design sem nome.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "16x16"
     },
     {
+      "filename" : "Design sem nome 3.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "16x16"
     },
     {
+      "filename" : "Design sem nome 4.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "32x32"
     },
     {
+      "filename" : "Design sem nome 5.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "32x32"
     },
     {
+      "filename" : "Design sem nome 6.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "128x128"
     },
     {
-      "filename" : "AndroidSeekerLogo 1.jpeg",
+      "filename" : "Design sem nome 1.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "128x128"
     },
     {
+      "filename" : "Design sem nome 7.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "256x256"
     },
     {
+      "filename" : "Design sem nome 9.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "256x256"
     },
     {
+      "filename" : "Design sem nome 8.png",
       "idiom" : "mac",
       "scale" : "1x",
       "size" : "512x512"
     },
     {
-      "filename" : "AndroidSeekerLogo 2.jpeg",
+      "filename" : "Design sem nome 2.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
