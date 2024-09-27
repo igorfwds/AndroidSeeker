@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DeviceListItemView: View {
-    
+//    @EnvironmentObject
     let device: Device
     
     var body: some View {

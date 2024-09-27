@@ -7,14 +7,17 @@
 
 import SwiftUI
 
+
 struct AppHeaderRefreshButtonView: View {
     @State private var rotationAngle: Double = 0
-
+    @EnvironmentObject var deviceManager: DeviceManager
+    
     var body: some View {
         HStack {
             Button(action: {
-                let _ = runADBDevices()
-                print(devices)
+                deviceManager.runADBDevices()
+                
+                print(deviceManager.devices)
                 withAnimation(.linear(duration: 1.0)) {
                     rotationAngle += 360
                 }
