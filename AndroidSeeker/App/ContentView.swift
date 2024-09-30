@@ -12,15 +12,17 @@ struct ContentView: View {
     @StateObject private var deviceManager = DeviceManager()
     
     var body: some View {
-        VStack {
-            ScrollView{
-                AppHeaderView()
-                DeviceListView()
+        NavigationStack {
+            VStack {
+                ScrollView{
+                    AppHeaderView()
+                    DeviceListView()
+                }
+                
             }
-            
+            .padding()
+            .environmentObject(deviceManager)
         }
-        .padding()
-        .environmentObject(deviceManager)
     }
 }
 
