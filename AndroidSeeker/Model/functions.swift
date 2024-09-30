@@ -59,10 +59,8 @@ class DeviceManager: ObservableObject {
 }
 
 
-
-func runLsCommand(device: Device) -> [String] {
+func runLsCommand(device: Device, deviceManager: DeviceManager) {
     let task = Process()
-//    let taskURL = "/opt/homebrew/bin/adb"
     let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
     task.executableURL = URL(fileURLWithPath: taskURL)
     task.arguments = ["-s", device.name, "shell", "ls"]
@@ -89,10 +87,19 @@ func runLsCommand(device: Device) -> [String] {
 
         if !output.isEmpty {
             let directories = output.split(separator: "\n").map(String.init)
-            print(directories)
-            return directories
+
+            // Cria uma nova lista de arquivos para o dispositivo
+            let files = directories.map { dir in
+                File(fileName: dir, parentFile: "/", subFiles: [])
+            }
+
+            // Atualiza o array de devices no DeviceManager
+            if let index = deviceManager.devices.firstIndex(where: { $0.id == device.id }) {
+                deviceManager.devices[index].files = files
+            }
+
+            print("Arquivos do dispositivo \(device.name): \(files)")
         }
-        
 
         if !errorOutput.isEmpty {
             print("Erros do comando:\n\(errorOutput)")
@@ -101,6 +108,4 @@ func runLsCommand(device: Device) -> [String] {
     } catch {
         print("Erro ao rodar adb: \(error)")
     }
-
-    return []
 }

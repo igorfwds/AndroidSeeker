@@ -12,29 +12,28 @@ struct DeviceListView: View {
     @EnvironmentObject private var deviceManager : DeviceManager
     var body: some View {
         
-            NavigationStack {
+
                 VStack(alignment: .leading, spacing: 30) {
                     ForEach(deviceManager.devices) { dev in
                         NavigationLink(destination: DeviceInternView(device: dev)) {
                             DeviceListItemView(device: dev)
-                                
+                                .onAppear{
+                                    runLsCommand(device: dev, deviceManager: deviceManager)
+                                }
                         }
-                        .onTapGesture {
-                            let deviceFiles = runLsCommand(device: dev)
-                            //                        if deviceFiles.isEmpty {
-                            //                            Text("No files found")
-                            //                        }
-                        }
+                        
                         .cornerRadius(50)
                     }
                 }
                 .padding()
-            }
         }
     }
 
 
 
 #Preview {
-    DeviceListView()
+    NavigationStack {
+        DeviceListView()
+            .environmentObject(DeviceManager())
+    }
 }
