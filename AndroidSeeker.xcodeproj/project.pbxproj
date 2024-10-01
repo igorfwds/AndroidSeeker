@@ -8,16 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C32F00A42CAC5F0D0003CF23 /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C32F00972CAC5F0D0003CF23 /* adb */; };
-		C32F00A52CAC5F0D0003CF23 /* etc1tool in Resources */ = {isa = PBXBuildFile; fileRef = C32F00982CAC5F0D0003CF23 /* etc1tool */; };
-		C32F00A62CAC5F0D0003CF23 /* fastboot in Resources */ = {isa = PBXBuildFile; fileRef = C32F00992CAC5F0D0003CF23 /* fastboot */; };
-		C32F00A72CAC5F0D0003CF23 /* hprof-conv in Resources */ = {isa = PBXBuildFile; fileRef = C32F009A2CAC5F0D0003CF23 /* hprof-conv */; };
-		C32F00A82CAC5F0D0003CF23 /* make_f2fs in Resources */ = {isa = PBXBuildFile; fileRef = C32F009B2CAC5F0D0003CF23 /* make_f2fs */; };
-		C32F00A92CAC5F0D0003CF23 /* make_f2fs_casefold in Resources */ = {isa = PBXBuildFile; fileRef = C32F009C2CAC5F0D0003CF23 /* make_f2fs_casefold */; };
-		C32F00AA2CAC5F0D0003CF23 /* mke2fs in Resources */ = {isa = PBXBuildFile; fileRef = C32F009D2CAC5F0D0003CF23 /* mke2fs */; };
-		C32F00AB2CAC5F0D0003CF23 /* mke2fs.conf in Resources */ = {isa = PBXBuildFile; fileRef = C32F009E2CAC5F0D0003CF23 /* mke2fs.conf */; };
-		C32F00AC2CAC5F0D0003CF23 /* NOTICE.txt in Resources */ = {isa = PBXBuildFile; fileRef = C32F009F2CAC5F0D0003CF23 /* NOTICE.txt */; };
-		C32F00AD2CAC5F0D0003CF23 /* source.properties in Resources */ = {isa = PBXBuildFile; fileRef = C32F00A02CAC5F0D0003CF23 /* source.properties */; };
-		C32F00AE2CAC5F0D0003CF23 /* sqlite3 in Resources */ = {isa = PBXBuildFile; fileRef = C32F00A12CAC5F0D0003CF23 /* sqlite3 */; };
 		F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */; };
 		F92EA61D2CA1E4DE00218337 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61C2CA1E4DE00218337 /* ContentView.swift */; };
 		F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA61E2CA1E4E000218337 /* Assets.xcassets */; };
@@ -36,18 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C32F00952CAC5F0D0003CF23 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libc++.dylib"; sourceTree = "<group>"; };
 		C32F00972CAC5F0D0003CF23 /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
-		C32F00982CAC5F0D0003CF23 /* etc1tool */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = etc1tool; sourceTree = "<group>"; };
-		C32F00992CAC5F0D0003CF23 /* fastboot */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = fastboot; sourceTree = "<group>"; };
-		C32F009A2CAC5F0D0003CF23 /* hprof-conv */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "hprof-conv"; sourceTree = "<group>"; };
-		C32F009B2CAC5F0D0003CF23 /* make_f2fs */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = make_f2fs; sourceTree = "<group>"; };
-		C32F009C2CAC5F0D0003CF23 /* make_f2fs_casefold */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = make_f2fs_casefold; sourceTree = "<group>"; };
-		C32F009D2CAC5F0D0003CF23 /* mke2fs */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = mke2fs; sourceTree = "<group>"; };
-		C32F009E2CAC5F0D0003CF23 /* mke2fs.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mke2fs.conf; sourceTree = "<group>"; };
-		C32F009F2CAC5F0D0003CF23 /* NOTICE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTICE.txt; sourceTree = "<group>"; };
-		C32F00A02CAC5F0D0003CF23 /* source.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = source.properties; sourceTree = "<group>"; };
-		C32F00A12CAC5F0D0003CF23 /* sqlite3 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = sqlite3; sourceTree = "<group>"; };
 		F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidSeeker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidSeekerApp.swift; sourceTree = "<group>"; };
 		F92EA61C2CA1E4DE00218337 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -81,36 +60,9 @@
 		C32F00942CAC5EE10003CF23 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C32F00A22CAC5F0D0003CF23 /* platform-tools */,
+				C32F00972CAC5F0D0003CF23 /* adb */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		C32F00962CAC5F0D0003CF23 /* lib64 */ = {
-			isa = PBXGroup;
-			children = (
-				C32F00952CAC5F0D0003CF23 /* libc++.dylib */,
-			);
-			path = lib64;
-			sourceTree = "<group>";
-		};
-		C32F00A22CAC5F0D0003CF23 /* platform-tools */ = {
-			isa = PBXGroup;
-			children = (
-				C32F00962CAC5F0D0003CF23 /* lib64 */,
-				C32F00972CAC5F0D0003CF23 /* adb */,
-				C32F00982CAC5F0D0003CF23 /* etc1tool */,
-				C32F00992CAC5F0D0003CF23 /* fastboot */,
-				C32F009A2CAC5F0D0003CF23 /* hprof-conv */,
-				C32F009B2CAC5F0D0003CF23 /* make_f2fs */,
-				C32F009C2CAC5F0D0003CF23 /* make_f2fs_casefold */,
-				C32F009D2CAC5F0D0003CF23 /* mke2fs */,
-				C32F009E2CAC5F0D0003CF23 /* mke2fs.conf */,
-				C32F009F2CAC5F0D0003CF23 /* NOTICE.txt */,
-				C32F00A02CAC5F0D0003CF23 /* source.properties */,
-				C32F00A12CAC5F0D0003CF23 /* sqlite3 */,
-			);
-			path = "platform-tools";
 			sourceTree = "<group>";
 		};
 		F92EA60E2CA1E4DE00218337 = {
@@ -259,19 +211,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C32F00A92CAC5F0D0003CF23 /* make_f2fs_casefold in Resources */,
-				C32F00AD2CAC5F0D0003CF23 /* source.properties in Resources */,
-				C32F00A62CAC5F0D0003CF23 /* fastboot in Resources */,
 				C32F00A42CAC5F0D0003CF23 /* adb in Resources */,
-				C32F00A72CAC5F0D0003CF23 /* hprof-conv in Resources */,
-				C32F00AE2CAC5F0D0003CF23 /* sqlite3 in Resources */,
 				F92EA6222CA1E4E000218337 /* Preview Assets.xcassets in Resources */,
-				C32F00A82CAC5F0D0003CF23 /* make_f2fs in Resources */,
 				F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */,
-				C32F00AA2CAC5F0D0003CF23 /* mke2fs in Resources */,
-				C32F00A52CAC5F0D0003CF23 /* etc1tool in Resources */,
-				C32F00AB2CAC5F0D0003CF23 /* mke2fs.conf in Resources */,
-				C32F00AC2CAC5F0D0003CF23 /* NOTICE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,7 +372,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -462,7 +404,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

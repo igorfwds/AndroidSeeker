@@ -63,8 +63,8 @@ class DeviceManager: ObservableObject {
 
 func runLsCommand(device: Device, deviceManager: DeviceManager) {
     let task = Process()
-    let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
-    task.executableURL = URL(fileURLWithPath: taskURL)
+    guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {return}
+    task.executableURL = url
     task.arguments = ["-s", device.name, "shell", "ls"]
 
     var env = ProcessInfo.processInfo.environment
