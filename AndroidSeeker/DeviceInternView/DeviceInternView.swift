@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct DeviceInternView: View {
-    
+    @EnvironmentObject private var deviceManager : DeviceManager
     var device: Device
     
     var body: some View {
-        
         DeviceInternListView(device: device)
+//            .onAppear {
+//                deviceManager.copyScreenshotDir(device: device)
+//            }
     }
 }
 
 #Preview {
     DeviceInternView(device: Device(id: deviceMock[0].id  , name: deviceMock[0].name, status: deviceMock[0].status, files: deviceMock[0].files))
+        .environmentObject(DeviceManager())
     
 }

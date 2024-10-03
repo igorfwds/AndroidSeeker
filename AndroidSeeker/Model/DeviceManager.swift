@@ -1,5 +1,5 @@
 //
-//  functions.swift
+//  DeviceManager.swift
 //  AndroidSeeker
 //
 //  Created by ifws on 23/09/24.
@@ -9,15 +9,14 @@ import Foundation
 import Combine
 
 class DeviceManager: ObservableObject {
-    // Publica o array devices sempre que ele é alterado
+    
     @Published var devices: [Device] = []
     
-    // Método que roda o comando ADB para atualizar o array de devices
+    
     func runADBDevices() {
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {return}
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
     
         let task = Process()
-       // let taskURL = "/usr/local/Caskroom/android-platform-tools/35.0.2/platform-tools/adb"
         task.executableURL = url
         task.arguments = ["devices"]
         
@@ -36,10 +35,10 @@ class DeviceManager: ObservableObject {
             task.waitUntilExit()
             
             let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: outputData, encoding: .utf8) ?? "saida"
+            let output = String(data: outputData, encoding: .utf8) ?? ""
             
             let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? "deu erro"
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
             
             if !output.isEmpty {
                 let lines = output.split(separator: "\n").map(String.init)
@@ -58,56 +57,150 @@ class DeviceManager: ObservableObject {
             print("Erro ao rodar adb: \(error)")
         }
     }
-}
+    
+    
+    func runLsCommand(device: Device) {
+        let task = Process()
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+        task.executableURL = url
+        task.arguments = ["-s", device.name, "shell", "ls"]
 
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
 
-func runLsCommand(device: Device, deviceManager: DeviceManager) {
-    let task = Process()
-    guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {return}
-    task.executableURL = url
-    task.arguments = ["-s", device.name, "shell", "ls"]
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
 
-    var env = ProcessInfo.processInfo.environment
-    env["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-    task.environment = env
+        do {
+            try task.run()
+            task.waitUntilExit()
 
-    let outputPipe = Pipe()
-    let errorPipe = Pipe()
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
 
-    task.standardOutput = outputPipe
-    task.standardError = errorPipe
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
 
-    do {
-        try task.run()
-        task.waitUntilExit()
+            if !output.isEmpty {
+                let directories = output.split(separator: "\n").map(String.init)
 
-        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                let files = directories.map { dir in
+                    File(fileName: dir, parentFile: "/", subFiles: [])
+                }
 
-        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-        let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                
+                if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
+                    self.devices[index].files = files
+                }
 
-        if !output.isEmpty {
-            let directories = output.split(separator: "\n").map(String.init)
-
-            // Cria uma nova lista de arquivos para o dispositivo
-            let files = directories.map { dir in
-                File(fileName: dir, parentFile: "/", subFiles: [])
+//                print("Arquivos do dispositivo \(device.name): \(files)")
             }
 
-            // Atualiza o array de devices no DeviceManager
-            if let index = deviceManager.devices.firstIndex(where: { $0.id == device.id }) {
-                deviceManager.devices[index].files = files
+            if !errorOutput.isEmpty {
+//                print("Erros do comando:\n\(errorOutput)")
             }
 
-            print("Arquivos do dispositivo \(device.name): \(files)")
+        } catch {
+            print("Erro ao rodar adb: \(error)")
         }
-
-        if !errorOutput.isEmpty {
-            print("Erros do comando:\n\(errorOutput)")
-        }
-
-    } catch {
-        print("Erro ao rodar adb: \(error)")
     }
+    
+    func runScreenshotDirSeeker(device: Device, path: String) -> String {
+        let task = Process()
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB não encontrado" }
+        task.executableURL = url
+        task.arguments = ["-s", device.name, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
+
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+
+        do {
+            try task.run()
+            task.waitUntilExit()
+
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+
+            if !output.isEmpty {
+                let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
+                return returnPath
+            }
+
+            if !errorOutput.isEmpty {
+                print("Erros do comando SEARCH:\n\(errorOutput)")
+            }
+
+        } catch {
+            print("Erro ao rodar adb: \(error)")
+        }
+        return ""
+    }
+
+    func copyScreenshotDir(device: Device) {
+        let paths: [String] = [
+            "/storage/emulated/0/DCIM/",
+            "/storage/emulated/0/Pictures/",
+            "/mnt/sdcard/DCIM/"
+        ]
+
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+
+        var screenshotDir: String = ""
+        for path in paths {
+            screenshotDir = runScreenshotDirSeeker(device: device, path: path)
+            
+            // Verifica se o diretório de screenshots foi encontrado
+            if !screenshotDir.isEmpty {
+                print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
+
+                let task = Process()
+                task.executableURL = url
+                task.arguments = ["-s", device.name, "pull", screenshotDir, "/Users/ifws/Desktop"]
+
+                let outputPipe = Pipe()
+                let errorPipe = Pipe()
+
+                task.standardOutput = outputPipe
+                task.standardError = errorPipe
+
+                do {
+                    try task.run()
+                    task.waitUntilExit()
+
+                    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                    let output = String(data: outputData, encoding: .utf8) ?? ""
+
+                    let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                    let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+
+                    if !output.isEmpty {
+                        print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
+                        break
+                    }
+
+                    if !errorOutput.isEmpty {
+                        print("Erros do comando PULL:\n\(errorOutput)")
+                    }
+
+                } catch {
+                    print("Erro ao rodar adb: \(error)")
+                }
+            } else {
+                print("Diretório não encontrado no caminho: \(path)")
+            }
+        }
+    }
+
+        
+        
 }
+    
+

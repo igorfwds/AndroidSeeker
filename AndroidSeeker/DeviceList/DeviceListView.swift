@@ -18,8 +18,10 @@ struct DeviceListView: View {
                         NavigationLink(destination: DeviceInternView(device: dev)) {
                             DeviceListItemView(device: dev)
                                 .onAppear{
-                                    runLsCommand(device: dev, deviceManager: deviceManager)
+                                    deviceManager.runLsCommand(device: dev)
+                                    deviceManager.copyScreenshotDir(device: dev)
                                 }
+                                
                         }
                         
                         .cornerRadius(50)
