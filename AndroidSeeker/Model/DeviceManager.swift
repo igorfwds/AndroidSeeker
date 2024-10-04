@@ -14,95 +14,101 @@ class DeviceManager: ObservableObject {
     
     
     func runADBDevices() {
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
-    
-        let task = Process()
-        task.executableURL = url
-        task.arguments = ["devices"]
         
-        var env = ProcessInfo.processInfo.environment
-        env["PATH"] = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
-        task.environment = env
-        
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-
-        task.standardOutput = outputPipe
-        task.standardError = errorPipe
-        
-        do {
-            try task.run()
-            task.waitUntilExit()
+        DispatchQueue.global(qos: .background).async {
+            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
             
-            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: outputData, encoding: .utf8) ?? ""
+            let task = Process()
+            task.executableURL = url
+            task.arguments = ["devices"]
             
-            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            let outputPipe = Pipe()
+            let errorPipe = Pipe()
             
-            if !output.isEmpty {
-                let lines = output.split(separator: "\n").map(String.init)
-                self.devices = lines.dropFirst().compactMap { line in
-                    let components = line.split(separator: "\t").map(String.init)
-                    guard components.count > 1 else { return nil }
-                    return Device(name: components[0], status: components[1], files: [])
+            task.standardOutput = outputPipe
+            task.standardError = errorPipe
+            
+            do {
+                try task.run()
+                task.waitUntilExit()
+                
+                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                
+                DispatchQueue.main.async {
+                    if !output.isEmpty {
+                        let lines = output.split(separator: "\n").map(String.init)
+                        self.devices = lines.dropFirst().compactMap { line in
+                            let components = line.split(separator: "\t").map(String.init)
+                            guard components.count > 1 else { return nil }
+                            return Device(name: components[0], status: components[1], files: [])
+                        }
+                    }
                 }
+                
+                if !errorOutput.isEmpty {
+                    print("Erros do comando:\n\(errorOutput)")
+                }
+                
+            } catch {
+                print("Erro ao rodar adb: \(error)")
             }
-            
-            if !errorOutput.isEmpty {
-                print("Erros do comando:\n\(errorOutput)")
-            }
-            
-        } catch {
-            print("Erro ao rodar adb: \(error)")
         }
     }
     
     
     func runLsCommand(device: Device) {
-        let task = Process()
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
-        task.executableURL = url
-        task.arguments = ["-s", device.name, "shell", "ls"]
-
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-
-        task.standardOutput = outputPipe
-        task.standardError = errorPipe
-
-        do {
-            try task.run()
-            task.waitUntilExit()
-
-            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: outputData, encoding: .utf8) ?? ""
-
-            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-
-            if !output.isEmpty {
-                let directories = output.split(separator: "\n").map(String.init)
-
+        DispatchQueue.global(qos: .background).async {
+            let task = Process()
+            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+            task.executableURL = url
+            task.arguments = ["-s", device.name, "shell", "ls"]
+            
+            let outputPipe = Pipe()
+            let errorPipe = Pipe()
+            
+            task.standardOutput = outputPipe
+            task.standardError = errorPipe
+            
+            do {
+                try task.run()
+                task.waitUntilExit()
                 
-                let files = directories.map { dir in
-                    File(fileName: dir, parentFile: "/", subFiles: [])
-                }
-
+                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
                 
-                if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
-                    self.devices[index].files = files
+                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+              
+               
+                DispatchQueue.main.async {
+                if !output.isEmpty {
+                    let directories = output.split(separator: "\n").map(String.init)
+                    
+                    
+                    let files = directories.map { dir in
+                        File(fileName: dir, parentFile: "/", subFiles: [])
+                    }
+                    
+                    
+                        if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
+                            self.devices[index].files = files
+                        }
+                    }
+                    
+                    //                print("Arquivos do dispositivo \(device.name): \(files)")
                 }
-
-//                print("Arquivos do dispositivo \(device.name): \(files)")
+                
+                if !errorOutput.isEmpty {
+                    //                print("Erros do comando:\n\(errorOutput)")
+                }
+                
+            } catch {
+                print("Erro ao rodar adb: \(error)")
             }
-
-            if !errorOutput.isEmpty {
-//                print("Erros do comando:\n\(errorOutput)")
-            }
-
-        } catch {
-            print("Erro ao rodar adb: \(error)")
         }
     }
     
@@ -111,96 +117,96 @@ class DeviceManager: ObservableObject {
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB não encontrado" }
         task.executableURL = url
         task.arguments = ["-s", device.name, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
-
+        
         let outputPipe = Pipe()
         let errorPipe = Pipe()
-
+        
         task.standardOutput = outputPipe
         task.standardError = errorPipe
-
+        
         do {
             try task.run()
             task.waitUntilExit()
-
+            
             let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
             let output = String(data: outputData, encoding: .utf8) ?? ""
-
+            
             let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
             let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-
+            
             if !output.isEmpty {
                 let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
                 print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
                 return returnPath
             }
-
+            
             if !errorOutput.isEmpty {
                 print("Erros do comando SEARCH:\n\(errorOutput)")
             }
-
+            
         } catch {
             print("Erro ao rodar adb: \(error)")
         }
         return ""
     }
-
+    
     func copyScreenshotDir(device: Device) {
-        let paths: [String] = [
-            "/storage/emulated/0/DCIM/",
-            "/storage/emulated/0/Pictures/",
-            "/mnt/sdcard/DCIM/"
-        ]
-
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
-
-        var screenshotDir: String = ""
-        for path in paths {
-            screenshotDir = runScreenshotDirSeeker(device: device, path: path)
+        DispatchQueue.global(qos: .background).async {
+            let paths: [String] = [
+                "/storage/emulated/0/DCIM/",
+                "/storage/emulated/0/Pictures/",
+                "/mnt/sdcard/DCIM/"
+            ]
             
-            // Verifica se o diretório de screenshots foi encontrado
-            if !screenshotDir.isEmpty {
-                print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
+            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+            
+            var screenshotDir: String = ""
+            for path in paths {
+                screenshotDir = self.runScreenshotDirSeeker(device: device, path: path)
+                
+                // Verifica se o diretório de screenshots foi encontrado
+                if !screenshotDir.isEmpty {
+                    print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
+                    
+                    let task = Process()
+                    task.executableURL = url
+                    task.arguments = ["-s", device.name, "pull", screenshotDir, "/Users/lgc/Desktop"]
+                    
+                    let outputPipe = Pipe()
+                    let errorPipe = Pipe()
+                    
+                    task.standardOutput = outputPipe
+                    task.standardError = errorPipe
+                    
+                    do {
+                        try task.run()
+                        task.waitUntilExit()
+                        
+                        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                        let output = String(data: outputData, encoding: .utf8) ?? ""
+                        
+                        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                        let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                        DispatchQueue.main.async {
+                            if !output.isEmpty {
+                                print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
 
-                let task = Process()
-                task.executableURL = url
-                task.arguments = ["-s", device.name, "pull", screenshotDir, "/Users/ifws/Desktop"]
-
-                let outputPipe = Pipe()
-                let errorPipe = Pipe()
-
-                task.standardOutput = outputPipe
-                task.standardError = errorPipe
-
-                do {
-                    try task.run()
-                    task.waitUntilExit()
-
-                    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                    let output = String(data: outputData, encoding: .utf8) ?? ""
-
-                    let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                    let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-
-                    if !output.isEmpty {
-                        print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
-                        break
+                            }
+                            
+                            if !errorOutput.isEmpty {
+                                print("Erros do comando PULL:\n\(errorOutput)")
+                            }
+                        }
+                        
+                    } catch {
+                        print("Erro ao rodar adb: \(error)")
                     }
-
-                    if !errorOutput.isEmpty {
-                        print("Erros do comando PULL:\n\(errorOutput)")
-                    }
-
-                } catch {
-                    print("Erro ao rodar adb: \(error)")
+                    } else {
+                        print("Diretório não encontrado no caminho: \(path)")
                 }
-            } else {
-                print("Diretório não encontrado no caminho: \(path)")
             }
         }
     }
-
-        
-        
 }
-    
+
 

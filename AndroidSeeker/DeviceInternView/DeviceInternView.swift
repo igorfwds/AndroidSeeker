@@ -13,9 +13,6 @@ struct DeviceInternView: View {
     
     var body: some View {
         DeviceInternListView(device: device)
-//            .onAppear {
-//                deviceManager.copyScreenshotDir(device: device)
-//            }
     }
 }
 

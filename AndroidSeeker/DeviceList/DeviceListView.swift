@@ -15,12 +15,12 @@ struct DeviceListView: View {
 
                 VStack(alignment: .leading, spacing: 30) {
                     ForEach(deviceManager.devices) { dev in
-                        NavigationLink(destination: DeviceInternView(device: dev)) {
+                        NavigationLink(destination: DeviceInternView(device: dev)
+                            .onAppear{
+                            deviceManager.runLsCommand(device: dev)
+                            deviceManager.copyScreenshotDir(device: dev)
+                        }) {
                             DeviceListItemView(device: dev)
-                                .onAppear{
-                                    deviceManager.runLsCommand(device: dev)
-                                    deviceManager.copyScreenshotDir(device: dev)
-                                }
                                 
                         }
                         
