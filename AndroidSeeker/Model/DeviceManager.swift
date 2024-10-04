@@ -82,18 +82,18 @@ class DeviceManager: ObservableObject {
                 
                 let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
                 let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-              
-               
+                
+                
                 DispatchQueue.main.async {
-                if !output.isEmpty {
-                    let directories = output.split(separator: "\n").map(String.init)
-                    
-                    
-                    let files = directories.map { dir in
-                        File(fileName: dir, parentFile: "/", subFiles: [])
-                    }
-                    
-                    
+                    if !output.isEmpty {
+                        let directories = output.split(separator: "\n").map(String.init)
+                        
+                        
+                        let files = directories.map { dir in
+                            File(fileName: dir, parentFile: "/", subFiles: [])
+                        }
+                        
+                        
                         if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
                             self.devices[index].files = files
                         }
@@ -112,7 +112,7 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    func runScreenshotDirSeeker(device: Device, path: String) -> String {
+    func runScreenshotDirSeeker(device: Device, path: String) async -> String {
         let task = Process()
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB não encontrado" }
         task.executableURL = url
@@ -150,60 +150,60 @@ class DeviceManager: ObservableObject {
         return ""
     }
     
-    func copyScreenshotDir(device: Device) {
-        DispatchQueue.global(qos: .background).async {
-            let paths: [String] = [
-                "/storage/emulated/0/DCIM/",
-                "/storage/emulated/0/Pictures/",
-                "/mnt/sdcard/DCIM/"
-            ]
+    func copyScreenshotDir(device: Device) async {
+        let paths: [String] = [
+            "/storage/emulated/0/DCIM/",
+            "/storage/emulated/0/Pictures/",
+            "/mnt/sdcard/DCIM/"
+        ]
+        
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+        
+        var screenshotDir: String = ""
+        for path in paths {
+            screenshotDir =  await runScreenshotDirSeeker(device: device, path: path)
             
-            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
-            
-            var screenshotDir: String = ""
-            for path in paths {
-                screenshotDir = self.runScreenshotDirSeeker(device: device, path: path)
+            // Verifica se o diretório de screenshots foi encontrado
+            if !screenshotDir.isEmpty {
+                print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
-                // Verifica se o diretório de screenshots foi encontrado
-                if !screenshotDir.isEmpty {
-                    print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
+                let task = Process()
+                task.executableURL = url
+                let desktopPath = "\(NSHomeDirectory())/Desktop"
+                task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
+                //                    task.arguments = ["-s", device.name, "pull", screenshotDir, "$HOME/Desktop"]
+                
+                let outputPipe = Pipe()
+                let errorPipe = Pipe()
+                
+                task.standardOutput = outputPipe
+                task.standardError = errorPipe
+                
+                do {
+                    try task.run()
+                    task.waitUntilExit()
                     
-                    let task = Process()
-                    task.executableURL = url
-                    task.arguments = ["-s", device.name, "pull", screenshotDir, "/Users/lgc/Desktop"]
+                    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                    let output = String(data: outputData, encoding: .utf8) ?? ""
                     
-                    let outputPipe = Pipe()
-                    let errorPipe = Pipe()
-                    
-                    task.standardOutput = outputPipe
-                    task.standardError = errorPipe
-                    
-                    do {
-                        try task.run()
-                        task.waitUntilExit()
-                        
-                        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                        let output = String(data: outputData, encoding: .utf8) ?? ""
-                        
-                        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                        let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                        DispatchQueue.main.async {
-                            if !output.isEmpty {
-                                print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
-
-                            }
+                    let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                    let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                    DispatchQueue.main.async {
+                        if !output.isEmpty {
+                            print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
                             
-                            if !errorOutput.isEmpty {
-                                print("Erros do comando PULL:\n\(errorOutput)")
-                            }
                         }
                         
-                    } catch {
-                        print("Erro ao rodar adb: \(error)")
+                        if !errorOutput.isEmpty {
+                            print("Erros do comando PULL:\n\(errorOutput)")
+                        }
                     }
-                    } else {
-                        print("Diretório não encontrado no caminho: \(path)")
+                    
+                } catch {
+                    print("Erro ao rodar adb: \(error)")
                 }
+            } else {
+                print("Diretório não encontrado no caminho: \(path)")
             }
         }
     }
