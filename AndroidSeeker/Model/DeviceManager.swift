@@ -13,50 +13,49 @@ class DeviceManager: ObservableObject {
     @Published var devices: [Device] = []
     
     
-    func runADBDevices() {
+    func runADBDevices() async {
         
-        DispatchQueue.global(qos: .background).async {
-            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+        
+        let task = Process()
+        task.executableURL = url
+        task.arguments = ["devices"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
             
-            let task = Process()
-            task.executableURL = url
-            task.arguments = ["devices"]
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
             
-            let outputPipe = Pipe()
-            let errorPipe = Pipe()
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
             
-            task.standardOutput = outputPipe
-            task.standardError = errorPipe
-            
-            do {
-                try task.run()
-                task.waitUntilExit()
-                
-                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                let output = String(data: outputData, encoding: .utf8) ?? ""
-                
-                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                
-                DispatchQueue.main.async {
-                    if !output.isEmpty {
-                        let lines = output.split(separator: "\n").map(String.init)
-                        self.devices = lines.dropFirst().compactMap { line in
-                            let components = line.split(separator: "\t").map(String.init)
-                            guard components.count > 1 else { return nil }
-                            return Device(name: components[0], status: components[1], files: [])
-                        }
+            DispatchQueue.main.async {
+                if !output.isEmpty {
+                    let lines = output.split(separator: "\n").map(String.init)
+                    self.devices = lines.dropFirst().compactMap { line in
+                        let components = line.split(separator: "\t").map(String.init)
+                        guard components.count > 1 else { return nil }
+                        return Device(name: components[0], status: components[1], files: [])
                     }
                 }
-                
-                if !errorOutput.isEmpty {
-                    print("Erros do comando:\n\(errorOutput)")
-                }
-                
-            } catch {
-                print("Erro ao rodar adb: \(error)")
             }
+            
+            if !errorOutput.isEmpty {
+                print("Erros do comando:\n\(errorOutput)")
+            }
+            
+        } catch {
+            print("Erro ao rodar adb: \(error)")
         }
+        
     }
     
     
