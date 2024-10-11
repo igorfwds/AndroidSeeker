@@ -16,6 +16,8 @@ struct AppHeaderRefreshButtonView: View {
     var body: some View {
         HStack {
             Button(action: {
+
+                deviceManager.isLoading = true
                 Task {
                     await deviceManager.runADBDevices()
                     devicesCheck()
@@ -34,14 +36,23 @@ struct AppHeaderRefreshButtonView: View {
                     .padding(20)
                     .cornerRadius(5.0)
                     .rotationEffect(.degrees(rotationAngle))
+                    .frame(width: 50, height: 50)
+                    .shadow(radius: 5)
             }
             .background(.white)
             .clipShape(Circle())
             
+        }
+        .alert(isPresented: $showAlert){
+            Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
+        }
+    }
+    func devicesCheck() {
+        if deviceManager.devices.isEmpty {
+            showAlert = true
         }.alert(isPresented: $showAlert){
             Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
         }
-        
     }
     
     func devicesCheck() {
@@ -52,7 +63,6 @@ struct AppHeaderRefreshButtonView: View {
         }
     }
 }
-
 #Preview {
     AppHeaderRefreshButtonView()
 }

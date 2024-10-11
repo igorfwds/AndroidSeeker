@@ -12,24 +12,29 @@ struct DeviceListView: View {
     @EnvironmentObject private var deviceManager : DeviceManager
     var body: some View {
         
-
-                VStack(alignment: .leading, spacing: 30) {
-                    ForEach(deviceManager.devices) { dev in
-                        NavigationLink(destination: DeviceInternView(device: dev)
-                            .onAppear{
-                                Task{await deviceManager.copyScreenshotDir(device: dev)
-                                }
-                                deviceManager.runLsCommand(device: dev)
-                            
-                        }) {
-                            DeviceListItemView(device: dev)
+        if deviceManager.isLoading{
+            ProgressView()
+        }
+        else {
+            VStack(alignment: .leading, spacing: 30) {
+                        ForEach(deviceManager.devices) { dev in
+                            NavigationLink(destination: DeviceInternView(device: dev)
+                                .onAppear{
+                                    Task{
+                                        await deviceManager.copyScreenshotDir(device: dev)
+                                    }
+                                    deviceManager.runLsCommand(device: dev)
                                 
+                            }) {
+                                DeviceListItemView(device: dev)
+                                    
+                            }
+                            
+                            .cornerRadius(50)
                         }
-                        
-                        .cornerRadius(50)
                     }
-                }
-                .padding()
+            .padding()
+        }
         }
     }
 
