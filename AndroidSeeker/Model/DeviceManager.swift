@@ -11,6 +11,7 @@ import Combine
 class DeviceManager: ObservableObject {
     
     @Published var devices: [Device] = []
+    @Published var isLoading = false
     
     
     func runADBDevices() {
@@ -47,6 +48,7 @@ class DeviceManager: ObservableObject {
                             return Device(name: components[0], status: components[1], files: [])
                         }
                     }
+                    self.isLoading = false
                 }
                 
                 if !errorOutput.isEmpty {
@@ -61,6 +63,7 @@ class DeviceManager: ObservableObject {
     
     
     func runLsCommand(device: Device) {
+        isLoading = true
         DispatchQueue.global(qos: .background).async {
             let task = Process()
             guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
@@ -109,6 +112,7 @@ class DeviceManager: ObservableObject {
             } catch {
                 print("Erro ao rodar adb: \(error)")
             }
+            self.isLoading = false
         }
     }
     

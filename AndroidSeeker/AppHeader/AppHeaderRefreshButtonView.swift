@@ -13,24 +13,26 @@ struct AppHeaderRefreshButtonView: View {
     @EnvironmentObject var deviceManager: DeviceManager
     
     var body: some View {
-        HStack {
-            Button(action: {
-                deviceManager.runADBDevices()
-                
-                print(deviceManager.devices)
-                withAnimation(.linear(duration: 1.0)) {
-                    rotationAngle += 360
+            HStack {
+                Button(action: {
+                    deviceManager.isLoading = true
+                    deviceManager.runADBDevices()
+                    
+                    print(deviceManager.devices)
+                    withAnimation(.linear(duration: 1.0)) {
+                        rotationAngle += 360
+                    }
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.title3)
+                        .foregroundColor(.blue)
+                        .padding(20)
+                        .rotationEffect(.degrees(rotationAngle))
                 }
-            }) {
-                Image(systemName: "arrow.clockwise")
-                    .font(.title3)
-                    .foregroundColor(.blue)
-                    .padding(20)
-                    .rotationEffect(.degrees(rotationAngle))
+                .background(Color.white)
+                .clipShape(Circle())
             }
-            .background(Color.white)
-            .clipShape(Circle())
-        }
+        
         
     }
 }
