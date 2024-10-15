@@ -47,13 +47,13 @@ struct AppHeaderRefreshButtonView: View {
             Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
         }
     }
-    func devicesCheck() {
-        if deviceManager.devices.isEmpty {
-            showAlert = true
-        }.alert(isPresented: $showAlert){
-            Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
-        }
-    }
+//    func devicesCheck() {
+//        if deviceManager.devices.isEmpty {
+//            showAlert = true
+//        }.alert(isPresented: $showAlert){
+//            Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
+//        }
+//    }
     
     func devicesCheck() {
         DispatchQueue.global(qos: .background).async {

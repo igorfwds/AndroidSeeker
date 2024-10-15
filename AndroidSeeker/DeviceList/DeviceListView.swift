@@ -17,21 +17,30 @@ struct DeviceListView: View {
         }
         else {
             VStack(alignment: .leading, spacing: 30) {
-                        ForEach(deviceManager.devices) { dev in
-                            NavigationLink(destination: DeviceInternView(device: dev)
-                                .onAppear{
-                                    Task{
-                                        await deviceManager.copyScreenshotDir(device: dev)
-                                    }
-                                    deviceManager.runLsCommand(device: dev)
-                                
-                            }) {
-                                DeviceListItemView(device: dev)
+                if !deviceManager.devices.isEmpty {
+                    ForEach(deviceManager.devices) { dev in
+                                NavigationLink(destination: DeviceInternView(device: dev)
+                                    .onAppear{
+                                        Task{
+                                            await deviceManager.copyScreenshotDir(device: dev)
+                                        }
+                                        deviceManager.runLsCommand(device: dev)
                                     
-                            }
-                            
-                            .cornerRadius(50)
-                        }
+                                }) {
+                                    DeviceListItemView(device: dev)
+                                        
+                                }
+                                
+                                .cornerRadius(50)
+                    }
+                }else{
+                    
+                        ContentUnavailableView("Nehum Dispositivo Encontrado...", systemImage: "iphone.gen3.slash", description: Text("Favor apertar o botão de buscar."))
+                            .frame(minWidth: 1600)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                    
+                }
                     }
             .padding()
         }
