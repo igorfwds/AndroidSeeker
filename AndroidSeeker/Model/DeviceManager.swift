@@ -62,7 +62,7 @@ class DeviceManager: ObservableObject {
     
     
     func runLsCommand(device: Device) {
-        isLoading = true
+//        isLoading = true
         DispatchQueue.global(qos: .background).async {
             let task = Process()
             guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
@@ -111,7 +111,7 @@ class DeviceManager: ObservableObject {
             } catch {
                 print("Erro ao rodar adb: \(error)")
             }
-            self.isLoading = false
+//            self.isLoading = false
         }
     }
     
@@ -172,7 +172,7 @@ class DeviceManager: ObservableObject {
                 
                 let task = Process()
                 task.executableURL = url
-                let desktopPath = "\(NSHomeDirectory())/Desktop"
+                let desktopPath = "\(NSHomeDirectory())/Desktop/Screenshots/\(device.name)/"
                 task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
                 //                    task.arguments = ["-s", device.name, "pull", screenshotDir, "$HOME/Desktop"]
                 
