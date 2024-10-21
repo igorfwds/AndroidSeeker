@@ -160,6 +160,8 @@ class DeviceManager: ObservableObject {
             "/mnt/sdcard/DCIM/"
         ]
         
+        let desktopPath = "\(NSHomeDirectory())/Desktop/Devices/\(device.name)/"
+        
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
         
         var screenshotDir: String = ""
@@ -170,9 +172,9 @@ class DeviceManager: ObservableObject {
             if !screenshotDir.isEmpty {
                 print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
+                createDirectory(at: desktopPath)
                 let task = Process()
                 task.executableURL = url
-                let desktopPath = "\(NSHomeDirectory())/Desktop/Screenshots/\(device.name)/"
                 task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
                 //                    task.arguments = ["-s", device.name, "pull", screenshotDir, "$HOME/Desktop"]
                 
@@ -208,6 +210,23 @@ class DeviceManager: ObservableObject {
             } else {
                 print("Diretório não encontrado no caminho: \(path)")
             }
+        }
+    }
+    
+    func createDirectory(at path: String) {
+        
+        let fileManager = FileManager.default
+
+        do {
+            // Define o URL do diretório que você quer criar
+            let directoryURL = URL(fileURLWithPath: path)
+
+            // Tenta criar o diretório com diretórios intermediários
+            try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+            
+            print("Diretório criado em: \(directoryURL.path)")
+        } catch {
+            print("Erro ao criar diretório: \(error.localizedDescription)")
         }
     }
 }

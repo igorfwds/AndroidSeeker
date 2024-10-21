@@ -21,6 +21,7 @@ struct DeviceListView: View {
                     ForEach(deviceManager.devices) { dev in
                                 NavigationLink(destination: DeviceInternView(device: dev)
                                     .onAppear{
+//                                        deviceManager.createDirectory()
                                         Task{
                                             await deviceManager.copyScreenshotDir(device: dev)
                                         }
