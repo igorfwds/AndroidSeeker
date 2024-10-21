@@ -62,7 +62,7 @@ class DeviceManager: ObservableObject {
     
     
     func runLsCommand(device: Device) {
-        isLoading = true
+//        isLoading = true
         DispatchQueue.global(qos: .background).async {
             let task = Process()
             guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
@@ -111,7 +111,7 @@ class DeviceManager: ObservableObject {
             } catch {
                 print("Erro ao rodar adb: \(error)")
             }
-            self.isLoading = false
+//            self.isLoading = false
         }
     }
     
@@ -160,6 +160,11 @@ class DeviceManager: ObservableObject {
             "/mnt/sdcard/DCIM/"
         ]
         
+        let deviceManufacturer = await runDeviceManufacturer(device: device)
+        let deviceModel = await runDeviceModel(device: device)
+        
+        let desktopPath = "\(NSHomeDirectory())/Desktop/Devices/\(deviceManufacturer)-\(deviceModel)-\(device.name)/"
+        
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
         
         var screenshotDir: String = ""
@@ -170,9 +175,9 @@ class DeviceManager: ObservableObject {
             if !screenshotDir.isEmpty {
                 print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
+                createDirectory(at: desktopPath)
                 let task = Process()
                 task.executableURL = url
-                let desktopPath = "\(NSHomeDirectory())/Desktop"
                 task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
                 //                    task.arguments = ["-s", device.name, "pull", screenshotDir, "$HOME/Desktop"]
                 
@@ -208,6 +213,86 @@ class DeviceManager: ObservableObject {
             } else {
                 print("Diretório não encontrado no caminho: \(path)")
             }
+        }
+    }
+    
+    func createDirectory(at path: String) {
+        
+        let fileManager = FileManager.default
+
+        do {
+            // Define o URL do diretório que você quer criar
+            let directoryURL = URL(fileURLWithPath: path)
+
+            // Tenta criar o diretório com diretórios intermediários
+            try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+            
+            print("Diretório criado em: \(directoryURL.path)")
+        } catch {
+            print("Erro ao criar diretório: \(error.localizedDescription)")
+        }
+    }
+    
+    func runDeviceManufacturer(device: Device) async -> String {
+        let task = Process()
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
+        task.executableURL = url
+        task.arguments = ["-s", device.name, "shell", "getprop", "ro.product.manufacturer"]
+      
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            
+            print(output.trimmingCharacters(in: .whitespacesAndNewlines))
+            
+            return output.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            
+        } catch {
+            return "Erro ao rodar adb: \(error)"
+        }
+    }
+    func runDeviceModel(device: Device) async -> String {
+        let task = Process()
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
+        task.executableURL = url
+        task.arguments = ["-s", device.name, "shell", "getprop", "ro.product.model"]
+      
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            
+            print(output.trimmingCharacters(in: .whitespacesAndNewlines))
+            
+            return output.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            
+        } catch {
+            return "Erro ao rodar adb: \(error)"
         }
     }
 }
