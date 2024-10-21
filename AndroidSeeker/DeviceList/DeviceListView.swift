@@ -10,6 +10,8 @@ import SwiftUI
 struct DeviceListView: View {
 //    @State private var notFoundMessage
     @EnvironmentObject private var deviceManager : DeviceManager
+    @Binding var isToggled: Bool
+    
     var body: some View {
         
         if deviceManager.isLoading{
@@ -51,7 +53,7 @@ struct DeviceListView: View {
 
 #Preview {
     NavigationStack {
-        DeviceListView()
+        DeviceListView(isToggled: .constant(true))
             .environmentObject(DeviceManager())
     }
 }
