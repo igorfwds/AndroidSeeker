@@ -171,8 +171,10 @@ class DeviceManager: ObservableObject {
         for path in paths {
             screenshotDir =  await runScreenshotDirSeeker(device: device, path: path)
             
+            
             // Verifica se o diretório de screenshots foi encontrado
             if !screenshotDir.isEmpty {
+                await dateDirectorieDevice(device: device, path: screenshotDir)
                 print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
                 createDirectory(at: desktopPath)
@@ -186,6 +188,8 @@ class DeviceManager: ObservableObject {
                 
                 task.standardOutput = outputPipe
                 task.standardError = errorPipe
+                
+                await dateDirectorieMacbook(desktopPath: desktopPath)
                 
                 do {
                     try task.run()
@@ -270,6 +274,7 @@ class DeviceManager: ObservableObject {
             return "Erro ao rodar adb: \(error)"
         }
     }
+    
     func runDeviceModel(device: Device) async -> String {
         let task = Process()
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
@@ -303,6 +308,62 @@ class DeviceManager: ObservableObject {
             return "Erro ao rodar adb: \(error)"
         }
     }
+    
+    func dateDirectorieDevice(device: Device, path: String) async -> String {
+        let task = Process()
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "" }
+        task.executableURL = url
+        task.arguments = ["-s", device.name, "shell", "stat", "-c", "%y", path, "|", "cut", "-d' '", "-f1-2", "|", "cut", "-c1-19"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            
+            print("Output da data device: \(output)")
+            return output
+            
+        } catch {
+            return "Erro ao rodar adb: \(error)"
+        }
+    }
+    
+    func dateDirectorieMacbook(desktopPath: String) async -> String {
+        let task = Process()
+        let url = "/bin/zsh"
+        task.executableURL = URL(fileURLWithPath: url)
+        task.arguments = ["-c", "stat -f \"%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"\(desktopPath)\""]
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        do {
+          try task.run()
+          task.waitUntilExit()
+          let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+          let output = String(data: outputData, encoding: .utf8) ?? ""
+          let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+          let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+          print("Output da data do desktop: \(output)")
+          return output
+        } catch {
+          print("Erro ao rodar adb: \(error)")
+        }
+        return ""
+      }
+    
+    
 }
 
 
