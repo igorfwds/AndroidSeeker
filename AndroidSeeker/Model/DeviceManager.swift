@@ -160,6 +160,10 @@ class DeviceManager: ObservableObject {
             "/mnt/sdcard/DCIM/"
         ]
         
+        var deviceModifiedAT: String = ""
+        var macbookModifiedAT: String = ""
+        
+        
         let deviceManufacturer = await runDeviceManufacturer(device: device)
         let deviceModel = await runDeviceModel(device: device)
         
@@ -174,7 +178,7 @@ class DeviceManager: ObservableObject {
             
             // Verifica se o diretório de screenshots foi encontrado
             if !screenshotDir.isEmpty {
-                await dateDirectorieDevice(device: device, path: screenshotDir)
+               deviceModifiedAT = await dateDirectorieDevice(device: device, path: screenshotDir)
                 print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
                 createDirectory(at: desktopPath)
@@ -189,7 +193,7 @@ class DeviceManager: ObservableObject {
                 task.standardOutput = outputPipe
                 task.standardError = errorPipe
                 
-                await dateDirectorieMacbook(desktopPath: desktopPath)
+                macbookModifiedAT = await dateDirectorieMacbook(desktopPath: desktopPath)
                 
                 do {
                     try task.run()
@@ -210,7 +214,24 @@ class DeviceManager: ObservableObject {
                             print("Erros do comando PULL:\n\(errorOutput)")
                         }
                     }
-                    
+                    //MARK: - teste
+                    if let deviceDate = convertStringToDate(deviceModifiedAT),
+                                       let macbookDate = convertStringToDate(macbookModifiedAT) {
+                                        // As datas foram convertidas com sucesso
+                                        print("Data do dispositivo: \(deviceDate)")
+                                        print("Data do MacBook: \(macbookDate)")
+                                        
+                                        // Você pode realizar comparações entre as datas aqui
+                                        // Exemplo: Ver se a data do dispositivo é mais recente que a do MacBook
+                                        if deviceDate > macbookDate {
+                                            print("O diretório do dispositivo foi modificado mais recentemente.")
+                                        } else {
+                                            print("O diretório no MacBook foi modificado mais recentemente ou é igual.")
+                                        }
+                                    } else {
+                                        print("Erro ao converter as datas.")
+                                    }
+                    //MARK: - fim teste
                 } catch {
                     print("Erro ao rodar adb: \(error)")
                 }
@@ -362,7 +383,13 @@ class DeviceManager: ObservableObject {
         }
         return ""
       }
-    
+    //MARK: - tentativa
+    func convertStringToDate(_ dateString: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Define o formato de entrada da string
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Garante a consistência do formato
+        return dateFormatter.date(from: dateString)
+    }
     
 }
 
