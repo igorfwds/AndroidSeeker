@@ -115,6 +115,8 @@ class DeviceManager: ObservableObject {
         }
     }
     
+    
+    // Procurar Screenshot device
     func runScreenshotDirSeeker(device: Device, path: String) async -> String {
         let task = Process()
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB não encontrado" }
@@ -153,6 +155,7 @@ class DeviceManager: ObservableObject {
         return ""
     }
     
+    // Pull do screenshot
     func copyScreenshotDir(device: Device) async {
         let paths: [String] = [
             "/storage/emulated/0/DCIM/",
@@ -216,8 +219,8 @@ class DeviceManager: ObservableObject {
         }
     }
     
+    // Cria o diretório no mac
     func createDirectory(at path: String) {
-        
         let fileManager = FileManager.default
 
         do {
@@ -233,6 +236,7 @@ class DeviceManager: ObservableObject {
         }
     }
     
+    // Fabricante do device
     func runDeviceManufacturer(device: Device) async -> String {
         let task = Process()
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
@@ -264,6 +268,8 @@ class DeviceManager: ObservableObject {
             return "Erro ao rodar adb: \(error)"
         }
     }
+    
+    // Modelo do device
     func runDeviceModel(device: Device) async -> String {
         let task = Process()
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
