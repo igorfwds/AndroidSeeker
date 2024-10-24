@@ -21,6 +21,13 @@ struct Device: Identifiable {
     var files : [File]
 }
 
+struct Screenshot: Identifiable {
+    var id = UUID()
+    var name: String
+    var parentFile: String
+    var lastModifiedAt: Date
+}
+
 var subFilesMock: [File] = [
     File(fileName: "subFile1", parentFile: "file1", subFiles: []),
     File(fileName: "subFile2", parentFile: "file2", subFiles: []),

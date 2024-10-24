@@ -62,7 +62,7 @@ class DeviceManager: ObservableObject {
     
     
     func runLsCommand(device: Device) {
-//        isLoading = true
+        //        isLoading = true
         DispatchQueue.global(qos: .background).async {
             let task = Process()
             guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
@@ -111,7 +111,7 @@ class DeviceManager: ObservableObject {
             } catch {
                 print("Erro ao rodar adb: \(error)")
             }
-//            self.isLoading = false
+            //            self.isLoading = false
         }
     }
     
@@ -163,6 +163,8 @@ class DeviceManager: ObservableObject {
             "/mnt/sdcard/DCIM/"
         ]
         
+        
+        
         let deviceManufacturer = await runDeviceManufacturer(device: device)
         let deviceModel = await runDeviceModel(device: device)
         
@@ -177,7 +179,7 @@ class DeviceManager: ObservableObject {
             
             // Verifica se o diretório de screenshots foi encontrado
             if !screenshotDir.isEmpty {
-                await dateDirectoryDevice(device: device, path: screenshotDir)
+                
                 print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
                 createDirectory(at: desktopPath)
@@ -192,7 +194,13 @@ class DeviceManager: ObservableObject {
                 task.standardOutput = outputPipe
                 task.standardError = errorPipe
                 
-                await dateDirectoryMacbook(desktopPath: desktopPath)
+//                await dateDirectoryMacbook(desktopPath: desktopPath)
+                var deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
+//                var deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
+                guard let deviceDate = convertStringToDate(deviceModifiedAT) else { return print("Erro ao converter data device") }
+                
+                var macbookModifiedAT = await dateDirectoryMacbook(desktopPath: desktopPath)
+                guard let macbookDate = convertStringToDate(macbookModifiedAT) else { return print("Erro ao converter data macbook") }
                 
                 do {
                     try task.run()
@@ -213,7 +221,25 @@ class DeviceManager: ObservableObject {
                             print("Erros do comando PULL:\n\(errorOutput)")
                         }
                     }
+                    //MARK: - Comparando datas
+                    compareDates(deviceDate: deviceDate, macbookDate: macbookDate)
                     
+//                    if let deviceDate = convertStringToDate(deviceModifiedAT), let macbookDate = convertStringToDate(macbookModifiedAT) {
+//                        
+//                        print("Data do dispositivo: \(deviceDate)")
+//                        print("Data do MacBook: \(macbookDate)")
+//                        
+//                        
+//                        
+//                        if deviceDate > macbookDate {
+//                            print("O diretório do dispositivo foi modificado mais recentemente.")
+//                        } else {
+//                            print("O diretório no MacBook foi modificado mais recentemente ou é igual.")
+//                        }
+//                    } else {
+//                        print("Erro ao converter as datas.")
+//                    }
+                    //MARK: - fim da comparação
                 } catch {
                     print("Erro ao rodar adb: \(error)")
                 }
@@ -226,12 +252,12 @@ class DeviceManager: ObservableObject {
     // Cria o diretório no mac
     func createDirectory(at path: String) {
         let fileManager = FileManager.default
-
+        
         do {
-            // Define o URL do diretório que você quer criar
+            
             let directoryURL = URL(fileURLWithPath: path)
-
-            // Tenta criar o diretório com diretórios intermediários
+            
+            
             try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
             
             print("Diretório criado em: \(directoryURL.path)")
@@ -243,13 +269,13 @@ class DeviceManager: ObservableObject {
     // Fabricante do device
     func runDeviceManufacturer(device: Device) async -> String {
         let task = Process()
-//        var vazio = ""
+        //        var vazio = ""
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
         task.executableURL = url
         task.arguments = ["-s", device.name, "shell", "getprop", "ro.product.manufacturer"]
-//        task.arguments = ["-s", device.name, "shell", "echo", vazio]
+        //        task.arguments = ["-s", device.name, "shell", "echo", vazio]
         
-      
+        
         let outputPipe = Pipe()
         let errorPipe = Pipe()
         
@@ -266,7 +292,7 @@ class DeviceManager: ObservableObject {
             let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
             let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
             
-            print(output.trimmingCharacters(in: .whitespacesAndNewlines))
+            print("Marca: \(output.trimmingCharacters(in: .whitespacesAndNewlines))")
             
             if output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 return "unknow"
@@ -285,8 +311,8 @@ class DeviceManager: ObservableObject {
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
         task.executableURL = url
         task.arguments = ["-s", device.name, "shell", "getprop", "ro.product.model"]
-//        task.arguments = ["-s", device.name, "shell", "echo", ""]
-      
+        //        task.arguments = ["-s", device.name, "shell", "echo", ""]
+        
         let outputPipe = Pipe()
         let errorPipe = Pipe()
         
@@ -337,7 +363,7 @@ class DeviceManager: ObservableObject {
             let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
             
             print("Output da data device: \(output)")
-            return output
+            return output.trimmingCharacters(in: .whitespacesAndNewlines)
             
         } catch {
             return "Erro ao rodar adb: \(error)"
@@ -354,21 +380,47 @@ class DeviceManager: ObservableObject {
         task.standardOutput = outputPipe
         task.standardError = errorPipe
         do {
-          try task.run()
-          task.waitUntilExit()
-          let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-          let output = String(data: outputData, encoding: .utf8) ?? ""
-          let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-          let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-          print("Output da data do desktop: \(output)")
-          return output
+            try task.run()
+            task.waitUntilExit()
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            print("Output da data do desktop: \(output)")
+            return output.trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {
-          print("Erro ao rodar adb: \(error)")
+            print("Erro ao rodar adb: \(error)")
         }
         return ""
     }
     
+    //MARK: - tentativa
+    func convertStringToDate(_ dateString: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Define o formato de entrada da string
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Garante a consistência do formato
+        print("TESTE DA CONVERSÃO \n => \(dateFormatter.date(from: dateString))")
+        print("Data recebida =>\(dateString)")
+        return dateFormatter.date(from: dateString)
+    }
+    
+    func compareDates(deviceDate: Date, macbookDate: Date) {
+        //MARK: - Comparando datas
+            
+        print("Data do dispositivo: \(deviceDate)")
+        print("Data do MacBook: \(macbookDate)")
+    
+        if deviceDate > macbookDate {
+            print("O diretório do dispositivo foi modificado mais recentemente.")
+        } else {
+            print("O diretório no MacBook foi modificado mais recentemente ou é igual.")
+        }
+
+        //MARK: - fim da comparação
+    }
+    
     
 }
+
 
 
