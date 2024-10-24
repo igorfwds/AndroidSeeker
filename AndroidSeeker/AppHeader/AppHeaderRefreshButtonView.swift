@@ -24,7 +24,7 @@ struct AppHeaderRefreshButtonView: View {
                     await deviceManager.runADBDevices()
                     devicesCheck()
                 }
-                print(deviceManager.devices)
+//                print(deviceManager.devices)
                 
             
                 withAnimation(.linear(duration: 1.0)) {
