@@ -9,9 +9,11 @@ import SwiftUI
 
 
 struct AppHeaderRefreshButtonView: View {
+    let defaults = UserDefaults.standard
     @State private var rotationAngle: Double = 0
     @EnvironmentObject var deviceManager: DeviceManager
     @State private var showAlert = false
+    @Binding var isToggled: Bool
     
     var body: some View {
         HStack {
@@ -42,10 +44,20 @@ struct AppHeaderRefreshButtonView: View {
             .background(.white)
             .clipShape(Circle())
             
+            
+            
         }
         .alert(isPresented: $showAlert){
             Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
         }
+        
+        Toggle(isOn: $isToggled) {
+            Text("Manter arquivos apagados")
+        }
+        .font(.title3)
+        .toggleStyle(.switch)
+        .padding()
+        
     }
 //    func devicesCheck() {
 //        if deviceManager.devices.isEmpty {
@@ -64,5 +76,5 @@ struct AppHeaderRefreshButtonView: View {
     }
 }
 #Preview {
-    AppHeaderRefreshButtonView()
+    AppHeaderRefreshButtonView( isToggled: .constant(true))
 }

@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct AppHeaderView: View {
+    @Binding var isToggled: Bool
     var body: some View {
         VStack {
             AppHeaderTitleView()
             
-            AppHeaderRefreshButtonView()
+            AppHeaderRefreshButtonView(isToggled: $isToggled)
             Spacer()
         }
     }
 }
 
 #Preview {
-    AppHeaderView()
+    AppHeaderView(isToggled: .constant(true))
 }
