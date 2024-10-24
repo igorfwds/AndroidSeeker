@@ -177,7 +177,7 @@ class DeviceManager: ObservableObject {
             
             // Verifica se o diretório de screenshots foi encontrado
             if !screenshotDir.isEmpty {
-                await dateDirectorieDevice(device: device, path: screenshotDir)
+                await dateDirectoryDevice(device: device, path: screenshotDir)
                 print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
                 createDirectory(at: desktopPath)
@@ -192,7 +192,7 @@ class DeviceManager: ObservableObject {
                 task.standardOutput = outputPipe
                 task.standardError = errorPipe
                 
-                await dateDirectorieMacbook(desktopPath: desktopPath)
+                await dateDirectoryMacbook(desktopPath: desktopPath)
                 
                 do {
                     try task.run()
@@ -314,7 +314,7 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    func dateDirectorieDevice(device: Device, path: String) async -> String {
+    func dateDirectoryDevice(device: Device, path: String) async -> String {
         let task = Process()
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "" }
         task.executableURL = url
@@ -344,7 +344,7 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    func dateDirectorieMacbook(desktopPath: String) async -> String {
+    func dateDirectoryMacbook(desktopPath: String) async -> String {
         let task = Process()
         let url = "/bin/zsh"
         task.executableURL = URL(fileURLWithPath: url)
