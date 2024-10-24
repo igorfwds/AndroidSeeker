@@ -163,8 +163,6 @@ class DeviceManager: ObservableObject {
             "/mnt/sdcard/DCIM/"
         ]
         
-        
-        
         let deviceManufacturer = await runDeviceManufacturer(device: device)
         let deviceModel = await runDeviceModel(device: device)
         
@@ -199,8 +197,11 @@ class DeviceManager: ObservableObject {
 //                var deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
                 guard let deviceDate = convertStringToDate(deviceModifiedAT) else { return print("Erro ao converter data device") }
                 
-                var macbookModifiedAT = await dateDirectoryMacbook(desktopPath: desktopPath)
-                guard let macbookDate = convertStringToDate(macbookModifiedAT) else { return print("Erro ao converter data macbook") }
+                guard let macbookDate = getLastModifiedDate(of: desktopPath) else { return print("Could not retrieve last modified date.")}
+                    print("Last modified date: \(macbookDate)")
+                
+//                var macbookModifiedAT = getLastModifiedDate(of: desktopPath)
+//                guard let macbookDate = convertStringToDate(macbookModifiedAT) else { return print("Erro ao converter data macbook") }
                 
                 do {
                     try task.run()
@@ -370,28 +371,50 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    func dateDirectoryMacbook(desktopPath: String) async -> String {
-        let task = Process()
-        let url = "/bin/zsh"
-        task.executableURL = URL(fileURLWithPath: url)
-        task.arguments = ["-c", "stat -f \"%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"\(desktopPath)\""]
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-        task.standardOutput = outputPipe
-        task.standardError = errorPipe
+//    func dateDirectoryMacbook(desktopPath: String) async -> String {
+//        let task = Process()
+//        let url = "/bin/zsh"
+//        task.executableURL = URL(fileURLWithPath: url)
+//        task.arguments = ["-c", "stat -f \"%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"\(desktopPath)\""]
+//        let outputPipe = Pipe()
+//        let errorPipe = Pipe()
+//        task.standardOutput = outputPipe
+//        task.standardError = errorPipe
+//        do {
+//            try task.run()
+//            task.waitUntilExit()
+//            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+//            let output = String(data: outputData, encoding: .utf8) ?? ""
+//            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+//            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+//            print("Output da data do desktop: \(output)")
+//            return output.trimmingCharacters(in: .whitespacesAndNewlines)
+//        } catch {
+//            print("Erro ao rodar adb: \(error)")
+//        }
+//        return ""
+//    }
+    
+    func getLastModifiedDate(of filePath: String) -> Date? {
+        let fileManager = FileManager.default
+
         do {
-            try task.run()
-            task.waitUntilExit()
-            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: outputData, encoding: .utf8) ?? ""
-            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-            print("Output da data do desktop: \(output)")
-            return output.trimmingCharacters(in: .whitespacesAndNewlines)
+            // Retrieve the file attributes
+            let attributes = try fileManager.attributesOfItem(atPath: filePath)
+
+            // Extract the modification date
+            if let modifiedDate = attributes[.modificationDate] as? Date {
+                return modifiedDate
+            } else {
+                print("Modification date attribute not found.")
+                return nil
+            }
+
         } catch {
-            print("Erro ao rodar adb: \(error)")
+            // Handle any errors that occur
+            print("Error retrieving file attributes: \(error.localizedDescription)")
+            return nil
         }
-        return ""
     }
     
     //MARK: - tentativa
@@ -418,7 +441,6 @@ class DeviceManager: ObservableObject {
 
         //MARK: - fim da comparação
     }
-    
     
 }
 
