@@ -23,6 +23,7 @@
 		F998FE002CA496BC0024B2CC /* DeviceInternView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDFF2CA496BC0024B2CC /* DeviceInternView.swift */; };
 		F998FE022CA496DD0024B2CC /* DeviceInternListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FE012CA496DD0024B2CC /* DeviceInternListView.swift */; };
 		F998FE042CA4970A0024B2CC /* DeviceInternListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FE032CA4970A0024B2CC /* DeviceInternListItemView.swift */; };
+		F9AA1EE42CCAD28C009BFB5D /* DeviceManager+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AA1EE32CCAD28C009BFB5D /* DeviceManager+.swift */; };
 		F9E404AE2CC6CE910017366E /* UserDefaults+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E404AD2CC6CE910017366E /* UserDefaults+.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +46,7 @@
 		F998FDFF2CA496BC0024B2CC /* DeviceInternView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternView.swift; sourceTree = "<group>"; };
 		F998FE012CA496DD0024B2CC /* DeviceInternListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternListView.swift; sourceTree = "<group>"; };
 		F998FE032CA4970A0024B2CC /* DeviceInternListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternListItemView.swift; sourceTree = "<group>"; };
+		F9AA1EE32CCAD28C009BFB5D /* DeviceManager+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceManager+.swift"; sourceTree = "<group>"; };
 		F9E404AD2CC6CE910017366E /* UserDefaults+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -132,6 +134,7 @@
 				F92EA62B2CA1F0E100218337 /* DeviceManager.swift */,
 				F998FDEC2CA47D970024B2CC /* Structures.swift */,
 				F9E404AD2CC6CE910017366E /* UserDefaults+.swift */,
+				F9AA1EE32CCAD28C009BFB5D /* DeviceManager+.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 				F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */,
 				F998FE022CA496DD0024B2CC /* DeviceInternListView.swift in Sources */,
 				F92EA62C2CA1F0E100218337 /* DeviceManager.swift in Sources */,
+				F9AA1EE42CCAD28C009BFB5D /* DeviceManager+.swift in Sources */,
 				F998FDF62CA484530024B2CC /* DeviceListTitleView.swift in Sources */,
 				F998FDED2CA47D970024B2CC /* Structures.swift in Sources */,
 			);
@@ -376,7 +380,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -408,7 +412,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

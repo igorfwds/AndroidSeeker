@@ -18,7 +18,7 @@ struct AppHeaderRefreshButtonView: View {
     var body: some View {
         HStack {
             Button(action: {
-
+                print(" ARRAY DO DICT \n =>\(deviceManager.compareFiles()) " )
                 deviceManager.isLoading = true
                 Task {
                     await deviceManager.runADBDevices()
