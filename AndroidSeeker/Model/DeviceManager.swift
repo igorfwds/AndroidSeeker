@@ -13,7 +13,6 @@ class DeviceManager: ObservableObject {
     @Published var devices: [Device] = []
     @Published var isLoading = false
     
-    
     func runADBDevices() async {
         
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
@@ -141,7 +140,7 @@ class DeviceManager: ObservableObject {
             
             if !output.isEmpty {
                 let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
-                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
+                //                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
                 return returnPath
             }
             
@@ -156,7 +155,7 @@ class DeviceManager: ObservableObject {
     }
     
     // Pull do screenshot
-    func copyScreenshotDir(device: Device) async {
+    func copyScreenshotDir(device: Device, isToggled: Bool) async {
         let paths: [String] = [
             "/storage/emulated/0/DCIM/",
             "/storage/emulated/0/Pictures/",
@@ -166,86 +165,86 @@ class DeviceManager: ObservableObject {
         let deviceManufacturer = await runDeviceManufacturer(device: device)
         let deviceModel = await runDeviceModel(device: device)
         
-        let desktopPath = "\(NSHomeDirectory())/Desktop/Devices/\(deviceManufacturer)-\(deviceModel)-\(device.name)/"
+        let desktopPath = "\(NSHomeDirectory())/Desktop/Devices/\(deviceManufacturer)-\(deviceModel)-\(device.name)/Screenshots"
         
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
         
         var screenshotDir: String = ""
         for path in paths {
-            screenshotDir =  await runScreenshotDirSeeker(device: device, path: path)
             
+            screenshotDir =  await runScreenshotDirSeeker(device: device, path: path)
             
             // Verifica se o diretório de screenshots foi encontrado
             if !screenshotDir.isEmpty {
                 
-                print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
-                
+                print("Diretório encontrado: \(screenshotDir)")
                 createDirectory(at: desktopPath)
+                
+                let deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
+                guard let deviceDate = convertStringToDate(deviceModifiedAT) else { return print("Erro ao converter data device") }
+                guard let macbookDate = getDesktopDirectoryDate(of: desktopPath) else { return print("Could not retrieve last modified date.")}
+                print("Data da última modificação: \(macbookDate)")
+                
+                //MARK: - Comparando datas
+                let isDirectoryUpdated = compareDates(deviceDate: deviceDate, macbookDate: macbookDate)
+                if isDirectoryUpdated {
+                    print("Não houve alteração no diretório desde a última sincronização.")
+                }
+                
+                let desktopDirectoryFiles = getFilesFromDesktop(desktopPath: desktopPath)
+                print("\nArquivos no desktop: \(desktopDirectoryFiles)")
+                
+                let deviceDirectoryFiles = await getFilesFromDevice(device: device, devicePath: screenshotDir)
+                print("\nArquivos no device: \(deviceDirectoryFiles)")
+                
                 let task = Process()
                 task.executableURL = url
-                task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
-                //                    task.arguments = ["-s", device.name, "pull", screenshotDir, "$HOME/Desktop"]
                 
-                let outputPipe = Pipe()
-                let errorPipe = Pipe()
-                
-                task.standardOutput = outputPipe
-                task.standardError = errorPipe
-                
-//                await dateDirectoryMacbook(desktopPath: desktopPath)
-                var deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
-//                var deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
-                guard let deviceDate = convertStringToDate(deviceModifiedAT) else { return print("Erro ao converter data device") }
-                
-                guard let macbookDate = getLastModifiedDate(of: desktopPath) else { return print("Could not retrieve last modified date.")}
-                    print("Last modified date: \(macbookDate)")
-                
-//                var macbookModifiedAT = getLastModifiedDate(of: desktopPath)
-//                guard let macbookDate = convertStringToDate(macbookModifiedAT) else { return print("Erro ao converter data macbook") }
-                
-                do {
-                    try task.run()
-                    task.waitUntilExit()
+                if isToggled {
+                    // Manter arquivos excluídos no desktop e adicionar os novos arquivos
+                    addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
                     
-                    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                    let output = String(data: outputData, encoding: .utf8) ?? ""
+                } else {
+                    // Sincronizar e não manter arquivos excluídos no desktop
+                    addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
                     
-                    let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                    let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                    DispatchQueue.main.async {
-                        if !output.isEmpty {
-                            print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
-                            
-                        }
-                        
-                        if !errorOutput.isEmpty {
-                            print("Erros do comando PULL:\n\(errorOutput)")
-                        }
-                    }
-                    //MARK: - Comparando datas
-                    compareDates(deviceDate: deviceDate, macbookDate: macbookDate)
                     
-//                    if let deviceDate = convertStringToDate(deviceModifiedAT), let macbookDate = convertStringToDate(macbookModifiedAT) {
+                    removeFilesFromDesktop(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, desktopPath: desktopPath)
+                    
+//                    task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
+//                    
+//                    let outputPipe = Pipe()
+//                    let errorPipe = Pipe()
+//                    
+//                    task.standardOutput = outputPipe
+//                    task.standardError = errorPipe
+//                    
+//                    do {
+//                        try task.run()
+//                        task.waitUntilExit()
 //                        
-//                        print("Data do dispositivo: \(deviceDate)")
-//                        print("Data do MacBook: \(macbookDate)")
+//                        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+//                        let output = String(data: outputData, encoding: .utf8) ?? ""
 //                        
-//                        
-//                        
-//                        if deviceDate > macbookDate {
-//                            print("O diretório do dispositivo foi modificado mais recentemente.")
-//                        } else {
-//                            print("O diretório no MacBook foi modificado mais recentemente ou é igual.")
+//                        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+//                        let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+//                        DispatchQueue.main.async {
+//                            if !output.isEmpty {
+//                                print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
+//                                
+//                            }
+//                            
+//                            if !errorOutput.isEmpty {
+//                                print("Erros do comando PULL:\n\(errorOutput)")
+//                            }
 //                        }
-//                    } else {
-//                        print("Erro ao converter as datas.")
+//                        
+//                    } catch {
+//                        print("Erro ao rodar adb: \(error)")
 //                    }
-                    //MARK: - fim da comparação
-                } catch {
-                    print("Erro ao rodar adb: \(error)")
                 }
             } else {
-                print("Diretório não encontrado no caminho: \(path)")
+                print("\nDiretório não encontrado no caminho: \(path)")
             }
         }
     }
@@ -293,7 +292,7 @@ class DeviceManager: ObservableObject {
             let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
             let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
             
-            print("Marca: \(output.trimmingCharacters(in: .whitespacesAndNewlines))")
+            //            print("Marca: \(output.trimmingCharacters(in: .whitespacesAndNewlines))")
             
             if output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 return "unknow"
@@ -371,37 +370,37 @@ class DeviceManager: ObservableObject {
         }
     }
     
-//    func dateDirectoryMacbook(desktopPath: String) async -> String {
-//        let task = Process()
-//        let url = "/bin/zsh"
-//        task.executableURL = URL(fileURLWithPath: url)
-//        task.arguments = ["-c", "stat -f \"%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"\(desktopPath)\""]
-//        let outputPipe = Pipe()
-//        let errorPipe = Pipe()
-//        task.standardOutput = outputPipe
-//        task.standardError = errorPipe
-//        do {
-//            try task.run()
-//            task.waitUntilExit()
-//            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-//            let output = String(data: outputData, encoding: .utf8) ?? ""
-//            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-//            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-//            print("Output da data do desktop: \(output)")
-//            return output.trimmingCharacters(in: .whitespacesAndNewlines)
-//        } catch {
-//            print("Erro ao rodar adb: \(error)")
-//        }
-//        return ""
-//    }
+    //    func dateDirectoryMacbook(desktopPath: String) async -> String {
+    //        let task = Process()
+    //        let url = "/bin/zsh"
+    //        task.executableURL = URL(fileURLWithPath: url)
+    //        task.arguments = ["-c", "stat -f \"%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"\(desktopPath)\""]
+    //        let outputPipe = Pipe()
+    //        let errorPipe = Pipe()
+    //        task.standardOutput = outputPipe
+    //        task.standardError = errorPipe
+    //        do {
+    //            try task.run()
+    //            task.waitUntilExit()
+    //            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+    //            let output = String(data: outputData, encoding: .utf8) ?? ""
+    //            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+    //            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+    //            print("Output da data do desktop: \(output)")
+    //            return output.trimmingCharacters(in: .whitespacesAndNewlines)
+    //        } catch {
+    //            print("Erro ao rodar adb: \(error)")
+    //        }
+    //        return ""
+    //    }
     
-    func getLastModifiedDate(of filePath: String) -> Date? {
+    func getDesktopDirectoryDate(of filePath: String) -> Date? {
         let fileManager = FileManager.default
-
+        
         do {
             // Retrieve the file attributes
             let attributes = try fileManager.attributesOfItem(atPath: filePath)
-
+            
             // Extract the modification date
             if let modifiedDate = attributes[.modificationDate] as? Date {
                 return modifiedDate
@@ -409,7 +408,7 @@ class DeviceManager: ObservableObject {
                 print("Modification date attribute not found.")
                 return nil
             }
-
+            
         } catch {
             // Handle any errors that occur
             print("Error retrieving file attributes: \(error.localizedDescription)")
@@ -422,24 +421,26 @@ class DeviceManager: ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Define o formato de entrada da string
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Garante a consistência do formato
-        print("TESTE DA CONVERSÃO \n => \(dateFormatter.date(from: dateString))")
-        print("Data recebida =>\(dateString)")
+        print("\nData formatada => \(dateFormatter.date(from: dateString))")
+        print("Data recebida => \(dateString)")
         return dateFormatter.date(from: dateString)
     }
     
-    func compareDates(deviceDate: Date, macbookDate: Date) {
-        //MARK: - Comparando datas
-            
+    func compareDates(deviceDate: Date, macbookDate: Date) -> Bool {
+        var isDirectoryUpdated: Bool
+        
         print("Data do dispositivo: \(deviceDate)")
         print("Data do MacBook: \(macbookDate)")
-    
+        
         if deviceDate > macbookDate {
+            isDirectoryUpdated = false
             print("O diretório do dispositivo foi modificado mais recentemente.")
         } else {
+            isDirectoryUpdated = true
             print("O diretório no MacBook foi modificado mais recentemente ou é igual.")
         }
-
-        //MARK: - fim da comparação
+        return isDirectoryUpdated
+        
     }
     
 }

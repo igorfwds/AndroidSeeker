@@ -24,7 +24,7 @@ struct DeviceListView: View {
                                 NavigationLink(destination: DeviceInternView(device: dev)
                                     .onAppear{
                                         Task{
-                                            await deviceManager.copyScreenshotDir(device: dev)
+                                            await deviceManager.copyScreenshotDir(device: dev, isToggled: isToggled)
                                         }
                                         deviceManager.runLsCommand(device: dev)
                                     
