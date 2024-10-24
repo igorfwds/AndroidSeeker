@@ -160,8 +160,6 @@ class DeviceManager: ObservableObject {
             "/mnt/sdcard/DCIM/"
         ]
         
-        var deviceModifiedAT: String = ""
-        var macbookModifiedAT: String = ""
         
         
         let deviceManufacturer = await runDeviceManufacturer(device: device)
@@ -178,7 +176,7 @@ class DeviceManager: ObservableObject {
             
             // Verifica se o diretório de screenshots foi encontrado
             if !screenshotDir.isEmpty {
-               deviceModifiedAT = await dateDirectorieDevice(device: device, path: screenshotDir)
+               var deviceModifiedAT = await dateDirectorieDevice(device: device, path: screenshotDir)
                 print("Diretório encontrado: \(screenshotDir), iniciando o pull...")
                 
                 createDirectory(at: desktopPath)
@@ -193,7 +191,7 @@ class DeviceManager: ObservableObject {
                 task.standardOutput = outputPipe
                 task.standardError = errorPipe
                 
-                macbookModifiedAT = await dateDirectorieMacbook(desktopPath: desktopPath)
+                var macbookModifiedAT = await dateDirectorieMacbook(desktopPath: desktopPath)
                 
                 do {
                     try task.run()
@@ -214,24 +212,23 @@ class DeviceManager: ObservableObject {
                             print("Erros do comando PULL:\n\(errorOutput)")
                         }
                     }
-                    //MARK: - teste
-                    if let deviceDate = convertStringToDate(deviceModifiedAT),
-                                       let macbookDate = convertStringToDate(macbookModifiedAT) {
-                                        // As datas foram convertidas com sucesso
+                    //MARK: - Comparando datas
+                    if let deviceDate = convertStringToDate(deviceModifiedAT), let macbookDate = convertStringToDate(macbookModifiedAT) {
+                                        
                                         print("Data do dispositivo: \(deviceDate)")
                                         print("Data do MacBook: \(macbookDate)")
                                         
-                                        // Você pode realizar comparações entre as datas aqui
-                                        // Exemplo: Ver se a data do dispositivo é mais recente que a do MacBook
+                                        
+                                        
                                         if deviceDate > macbookDate {
                                             print("O diretório do dispositivo foi modificado mais recentemente.")
                                         } else {
                                             print("O diretório no MacBook foi modificado mais recentemente ou é igual.")
                                         }
-                                    } else {
-                                        print("Erro ao converter as datas.")
-                                    }
-                    //MARK: - fim teste
+                    } else {
+                        print("Erro ao converter as datas.")
+                    }
+                    //MARK: - fim da comparação
                 } catch {
                     print("Erro ao rodar adb: \(error)")
                 }
@@ -246,10 +243,10 @@ class DeviceManager: ObservableObject {
         let fileManager = FileManager.default
 
         do {
-            // Define o URL do diretório que você quer criar
+            
             let directoryURL = URL(fileURLWithPath: path)
 
-            // Tenta criar o diretório com diretórios intermediários
+            
             try fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
             
             print("Diretório criado em: \(directoryURL.path)")
@@ -353,7 +350,7 @@ class DeviceManager: ObservableObject {
             let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
             
             print("Output da data device: \(output)")
-            return output
+            return output.trimmingCharacters(in: .whitespacesAndNewlines)
             
         } catch {
             return "Erro ao rodar adb: \(error)"
@@ -377,7 +374,7 @@ class DeviceManager: ObservableObject {
           let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
           let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
           print("Output da data do desktop: \(output)")
-          return output
+          return output.trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {
           print("Erro ao rodar adb: \(error)")
         }
@@ -388,6 +385,8 @@ class DeviceManager: ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Define o formato de entrada da string
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Garante a consistência do formato
+        print("TESTE DA CONVERSÃO \n => \(dateFormatter.date(from: dateString))")
+        print("Data recebida =>\(dateString)")
         return dateFormatter.date(from: dateString)
     }
     
