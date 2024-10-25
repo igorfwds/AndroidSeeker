@@ -197,6 +197,10 @@ class DeviceManager: ObservableObject {
                 let deviceDirectoryFiles = await getFilesFromDevice(device: device, devicePath: screenshotDir)
                 print("\nArquivos no device: \(deviceDirectoryFiles)")
                 
+                let deviceFilesDate = getDeviceFileDate(device: device, deviceDirectoryFiles: deviceDirectoryFiles, path: screenshotDir)
+                let desktopFilesDate = getDesktopFileDate(desktopPath: desktopPath, desktopDirectoryFiles: desktopDirectoryFiles)
+
+                
                 let task = Process()
                 task.executableURL = url
                 
@@ -204,12 +208,15 @@ class DeviceManager: ObservableObject {
                     // Manter arquivos excluídos no desktop e adicionar os novos arquivos
                     addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
                     
+                    modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
+                    
                 } else {
                     // Sincronizar e não manter arquivos excluídos no desktop
                     addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
                     
-                    
                     removeFilesFromDesktop(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, desktopPath: desktopPath)
+                    
+                    modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
                     
 //                    task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
 //                    
@@ -398,20 +405,19 @@ class DeviceManager: ObservableObject {
         let fileManager = FileManager.default
         
         do {
-            // Retrieve the file attributes
+            // Recupera os atributos do arquivo
             let attributes = try fileManager.attributesOfItem(atPath: filePath)
             
-            // Extract the modification date
+            // Extrai a data de modificação
             if let modifiedDate = attributes[.modificationDate] as? Date {
                 return modifiedDate
             } else {
-                print("Modification date attribute not found.")
+                print("Data de modificação não encontrada.")
                 return nil
             }
             
         } catch {
-            // Handle any errors that occur
-            print("Error retrieving file attributes: \(error.localizedDescription)")
+            print("Erro na recuperação dos atributos do arquivo: \(error.localizedDescription)")
             return nil
         }
     }

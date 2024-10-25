@@ -110,6 +110,112 @@ extension DeviceManager {
         
     }
     
+    func getDeviceFileDate(device: Device, deviceDirectoryFiles: [File], path: String) -> [String:Date] {
+        
+        let deviceFileNames = Set(deviceDirectoryFiles.map { $0.fileName })
+        
+        var deviceFilesDate: [String: Date] = [:]
+    
+        for file in deviceFileNames {
+            
+            // Pegando a data de cada arquivo
+            let filePath = "\(path)/\(file)"
+            
+            let task = Process()
+            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return [:] }
+            task.executableURL = url
+            task.arguments = ["-s", device.name, "shell", "stat", "-c", "%y", "'\(filePath)'", "|", "cut", "-d' '", "-f1-2", "|", "cut", "-c1-19"]
+            
+            let outputPipe = Pipe()
+            let errorPipe = Pipe()
+            
+            task.standardOutput = outputPipe
+            task.standardError = errorPipe
+            
+            do {
+                try task.run()
+                task.waitUntilExit()
+                
+                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                
+                print("Output da data device: \(output)")
+                var dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
+               
+                //Armazenando no dicionário
+                if let fileDate = convertStringToDate(dateString) {
+                    deviceFilesDate[file] = fileDate
+                } else {
+                    print("Erro ao converter a data para o arquivo: \(file)")
+                }
+                
+            } catch {
+                print("Erro ao rodar adb: \(error)")
+            }
+        }
+        
+        print("Dicionário do device: \(deviceFilesDate)")
+        return deviceFilesDate
+    }
+    
+    func getDesktopFileDate(desktopPath: String, desktopDirectoryFiles: [File]) -> [String:Date] {
+        
+        let desktopFileNames = Set(desktopDirectoryFiles.map { $0.fileName })
+        
+        var desktopFilesDate: [String: Date] = [:]
+        
+        for file in desktopFileNames {
+            let fileManager = FileManager.default
+            
+            let filePath = "\(desktopPath)/\(file)"
+            
+            do {
+                // Recupera os atributos do arquivo
+                let attributes = try fileManager.attributesOfItem(atPath: filePath)
+                
+                // Extrai a data de modificação
+                if let modifiedDate = attributes[.modificationDate] as? Date {
+                    desktopFilesDate[file] = modifiedDate
+                } else {
+                    print("Data de modificação não encontrada.")
+
+                }
+                
+            } catch {
+                print("Erro na recuperação dos atributos do arquivo: \(error.localizedDescription)")
+            }
+        }
+        print("\nDicionário do desktop: \(desktopFilesDate)\n")
+        return desktopFilesDate
+    }
+    
+    
+    func modifyFilesFromDesktop(device: Device, path: String, desktopPath: String, deviceFilesDate: [String:Date], desktopFilesDate: [String:Date]) {
+        
+        for (file, deviceDate) in deviceFilesDate {
+            
+            guard let desktopDate = desktopFilesDate[file] else { return }
+            
+            if deviceDate > desktopDate {
+                let task = Process()
+                guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+                task.executableURL = url
+                task.arguments = ["-s", device.name, "pull", "\(path)/\(file)", desktopPath]
+                
+                do {
+                    try task.run()
+                    task.waitUntilExit()
+                    print("\nArquivo modificado adicionado ao desktop: \(file)")
+                } catch {
+                    print("Erro ao adicionar arquivo modificado ao desktop: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
 }
 
 
