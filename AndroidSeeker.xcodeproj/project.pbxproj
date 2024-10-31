@@ -24,8 +24,38 @@
 		F998FE022CA496DD0024B2CC /* DeviceInternListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FE012CA496DD0024B2CC /* DeviceInternListView.swift */; };
 		F998FE042CA4970A0024B2CC /* DeviceInternListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FE032CA4970A0024B2CC /* DeviceInternListItemView.swift */; };
 		F9AA1EE42CCAD28C009BFB5D /* DeviceManager+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AA1EE32CCAD28C009BFB5D /* DeviceManager+.swift */; };
+		F9D1F52A2CD4067F0079A391 /* DeviceManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D1F5292CD4067F0079A391 /* DeviceManagerService.swift */; };
+		F9D1F52C2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D1F52B2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift */; };
+		F9D1F52E2CD406800079A391 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D1F52D2CD4067F0079A391 /* main.swift */; };
+		F9D1F5332CD406800079A391 /* DeviceManagerService.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = F9D1F5272CD4067F0079A391 /* DeviceManagerService.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F9D1F5382CD4099F0079A391 /* DeviceManagerServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D1F52B2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift */; };
+		F9D1F5392CD409AA0079A391 /* DeviceManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D1F5292CD4067F0079A391 /* DeviceManagerService.swift */; };
 		F9E404AE2CC6CE910017366E /* UserDefaults+.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E404AD2CC6CE910017366E /* UserDefaults+.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F9D1F5312CD406800079A391 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F92EA60F2CA1E4DE00218337 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F9D1F5262CD4067F0079A391;
+			remoteInfo = DeviceManagerService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F9D1F5372CD406800079A391 /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				F9D1F5332CD406800079A391 /* DeviceManagerService.xpc in Embed XPC Services */,
+			);
+			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		C32F00972CAC5F0D0003CF23 /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
@@ -47,11 +77,24 @@
 		F998FE012CA496DD0024B2CC /* DeviceInternListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternListView.swift; sourceTree = "<group>"; };
 		F998FE032CA4970A0024B2CC /* DeviceInternListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInternListItemView.swift; sourceTree = "<group>"; };
 		F9AA1EE32CCAD28C009BFB5D /* DeviceManager+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DeviceManager+.swift"; sourceTree = "<group>"; };
+		F9D1F5272CD4067F0079A391 /* DeviceManagerService.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = DeviceManagerService.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9D1F5292CD4067F0079A391 /* DeviceManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManagerService.swift; sourceTree = "<group>"; };
+		F9D1F52B2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManagerServiceProtocol.swift; sourceTree = "<group>"; };
+		F9D1F52D2CD4067F0079A391 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		F9D1F52F2CD406800079A391 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F9D1F5302CD406800079A391 /* DeviceManagerService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeviceManagerService.entitlements; sourceTree = "<group>"; };
 		F9E404AD2CC6CE910017366E /* UserDefaults+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F92EA6142CA1E4DE00218337 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F9D1F5242CD4067F0079A391 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -73,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				F92EA6192CA1E4DE00218337 /* AndroidSeeker */,
+				F9D1F5282CD4067F0079A391 /* DeviceManagerService */,
 				F92EA6182CA1E4DE00218337 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */,
+				F9D1F5272CD4067F0079A391 /* DeviceManagerService.xpc */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -159,6 +204,18 @@
 			path = DeviceInternView;
 			sourceTree = "<group>";
 		};
+		F9D1F5282CD4067F0079A391 /* DeviceManagerService */ = {
+			isa = PBXGroup;
+			children = (
+				F9D1F5292CD4067F0079A391 /* DeviceManagerService.swift */,
+				F9D1F52B2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift */,
+				F9D1F52D2CD4067F0079A391 /* main.swift */,
+				F9D1F52F2CD406800079A391 /* Info.plist */,
+				F9D1F5302CD406800079A391 /* DeviceManagerService.entitlements */,
+			);
+			path = DeviceManagerService;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -169,15 +226,34 @@
 				F92EA6132CA1E4DE00218337 /* Sources */,
 				F92EA6142CA1E4DE00218337 /* Frameworks */,
 				F92EA6152CA1E4DE00218337 /* Resources */,
+				F9D1F5372CD406800079A391 /* Embed XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F9D1F5322CD406800079A391 /* PBXTargetDependency */,
 			);
 			name = AndroidSeeker;
 			productName = AndroidSeeker;
 			productReference = F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */;
 			productType = "com.apple.product-type.application";
+		};
+		F9D1F5262CD4067F0079A391 /* DeviceManagerService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F9D1F5342CD406800079A391 /* Build configuration list for PBXNativeTarget "DeviceManagerService" */;
+			buildPhases = (
+				F9D1F5232CD4067F0079A391 /* Sources */,
+				F9D1F5242CD4067F0079A391 /* Frameworks */,
+				F9D1F5252CD4067F0079A391 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DeviceManagerService;
+			productName = DeviceManagerService;
+			productReference = F9D1F5272CD4067F0079A391 /* DeviceManagerService.xpc */;
+			productType = "com.apple.product-type.xpc-service";
 		};
 /* End PBXNativeTarget section */
 
@@ -190,6 +266,9 @@
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					F92EA6162CA1E4DE00218337 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					F9D1F5262CD4067F0079A391 = {
 						CreatedOnToolsVersion = 15.4;
 					};
 				};
@@ -208,6 +287,7 @@
 			projectRoot = "";
 			targets = (
 				F92EA6162CA1E4DE00218337 /* AndroidSeeker */,
+				F9D1F5262CD4067F0079A391 /* DeviceManagerService */,
 			);
 		};
 /* End PBXProject section */
@@ -220,6 +300,13 @@
 				C32F00A42CAC5F0D0003CF23 /* adb in Resources */,
 				F92EA6222CA1E4E000218337 /* Preview Assets.xcassets in Resources */,
 				F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F9D1F5252CD4067F0079A391 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,6 +324,7 @@
 				F998FDF92CA484BC0024B2CC /* AppHeaderTitleView.swift in Sources */,
 				F998FDFB2CA484D70024B2CC /* AppHeaderRefreshButtonView.swift in Sources */,
 				F998FDEF2CA481450024B2CC /* DeviceListItemView.swift in Sources */,
+				F9D1F5382CD4099F0079A391 /* DeviceManagerServiceProtocol.swift in Sources */,
 				F998FDFD2CA486BC0024B2CC /* AppHeaderView.swift in Sources */,
 				F998FE002CA496BC0024B2CC /* DeviceInternView.swift in Sources */,
 				F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */,
@@ -244,11 +332,30 @@
 				F92EA62C2CA1F0E100218337 /* DeviceManager.swift in Sources */,
 				F9AA1EE42CCAD28C009BFB5D /* DeviceManager+.swift in Sources */,
 				F998FDF62CA484530024B2CC /* DeviceListTitleView.swift in Sources */,
+				F9D1F5392CD409AA0079A391 /* DeviceManagerService.swift in Sources */,
 				F998FDED2CA47D970024B2CC /* Structures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F9D1F5232CD4067F0079A391 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9D1F52A2CD4067F0079A391 /* DeviceManagerService.swift in Sources */,
+				F9D1F52C2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift in Sources */,
+				F9D1F52E2CD406800079A391 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F9D1F5322CD406800079A391 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F9D1F5262CD4067F0079A391 /* DeviceManagerService */;
+			targetProxy = F9D1F5312CD406800079A391 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F92EA6242CA1E4E000218337 /* Debug */ = {
@@ -372,6 +479,7 @@
 		F92EA6272CA1E4E000218337 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AndroidSeeker/AndroidSeeker.entitlements;
@@ -380,7 +488,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -404,6 +512,7 @@
 		F92EA6282CA1E4E000218337 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AndroidSeeker/AndroidSeeker.entitlements;
@@ -412,7 +521,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -428,6 +537,50 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = igor.cesar.learning.AndroidSeeker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F9D1F5352CD406800079A391 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DeviceManagerService/DeviceManagerService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DeviceManagerService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DeviceManagerService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = igor.cesar.learning.DeviceManagerService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F9D1F5362CD406800079A391 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = DeviceManagerService/DeviceManagerService.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DeviceManagerService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DeviceManagerService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = igor.cesar.learning.DeviceManagerService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -450,6 +603,15 @@
 			buildConfigurations = (
 				F92EA6272CA1E4E000218337 /* Debug */,
 				F92EA6282CA1E4E000218337 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F9D1F5342CD406800079A391 /* Build configuration list for PBXNativeTarget "DeviceManagerService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9D1F5352CD406800079A391 /* Debug */,
+				F9D1F5362CD406800079A391 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
