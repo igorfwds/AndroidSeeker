@@ -7,25 +7,30 @@
 
 import Foundation
 
-struct File: Identifiable {
+class File: Identifiable {
     var id = UUID()
     var fileName : String
     var parentFile : String
     var subFiles : [File]
+    
+    init(fileName: String, parentFile: String, subFiles: [File]) {
+            self.fileName = fileName
+            self.parentFile = parentFile
+            self.subFiles = subFiles
+    }
 }
 
-struct Device: Identifiable {
+class Device: Identifiable {
     var id = UUID()
     var name: String
     var status: String
     var files : [File]
-}
-
-struct Screenshot: Identifiable {
-    var id = UUID()
-    var name: String
-    var parentFile: String
-    var lastModifiedAt: Date
+    
+    init(name: String, status: String, files: [File]) {
+        self.name = name
+        self.status = status
+        self.files = files
+    }
 }
 
 var subFilesMock: [File] = [
@@ -64,10 +69,10 @@ var filesMock: [File] = [
 
 
 var deviceMock : [Device] = [
-    Device(id: UUID(), name: "ÄDDCCBB$", status: "device", files: filesMock ),
-    Device(id: UUID(), name: "465F4478", status: "offline", files: filesMock),
-    Device(id: UUID(), name: "34DFZZ78", status: "unauthorized", files: filesMock),
-    Device(id: UUID(), name: "89GFZZ78", status: "unauthorized", files: filesMock),
-    Device(id: UUID(), name: "IGORFZZ78", status: "device", files: filesMock)
+    Device(name: "ÄDDCCBB$", status: "device", files: filesMock ),
+    Device(name: "465F4478", status: "offline", files: filesMock),
+    Device(name: "34DFZZ78", status: "unauthorized", files: filesMock),
+    Device(name: "89GFZZ78", status: "unauthorized", files: filesMock),
+    Device(name: "IGORFZZ78", status: "device", files: filesMock)
 ]
 

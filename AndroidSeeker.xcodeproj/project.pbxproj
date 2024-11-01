@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C32F00A42CAC5F0D0003CF23 /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C32F00972CAC5F0D0003CF23 /* adb */; };
+		C3BCBD7C2CD547F2007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
+		C3BCBD7D2CD5573E007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
 		F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */; };
 		F92EA61D2CA1E4DE00218337 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61C2CA1E4DE00218337 /* ContentView.swift */; };
 		F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA61E2CA1E4E000218337 /* Assets.xcassets */; };
@@ -58,7 +59,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C32F00972CAC5F0D0003CF23 /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
+		C3BCBD7B2CD547F2007DF11F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
 		F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidSeeker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidSeekerApp.swift; sourceTree = "<group>"; };
 		F92EA61C2CA1E4DE00218337 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -104,12 +105,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C32F00942CAC5EE10003CF23 /* Resources */ = {
+		C3BCBD7A2CD547D5007DF11F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				C32F00972CAC5F0D0003CF23 /* adb */,
+				C3BCBD7B2CD547F2007DF11F /* adb */,
 			);
-			path = Resources;
+			path = Resource;
 			sourceTree = "<group>";
 		};
 		F92EA60E2CA1E4DE00218337 = {
@@ -133,7 +134,6 @@
 		F92EA6192CA1E4DE00218337 /* AndroidSeeker */ = {
 			isa = PBXGroup;
 			children = (
-				C32F00942CAC5EE10003CF23 /* Resources */,
 				F998FDF22CA483A90024B2CC /* App */,
 				F998FDF72CA484950024B2CC /* AppHeader */,
 				F998FDF32CA483C80024B2CC /* DeviceList */,
@@ -207,6 +207,7 @@
 		F9D1F5282CD4067F0079A391 /* DeviceManagerService */ = {
 			isa = PBXGroup;
 			children = (
+				C3BCBD7A2CD547D5007DF11F /* Resource */,
 				F9D1F5292CD4067F0079A391 /* DeviceManagerService.swift */,
 				F9D1F52B2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift */,
 				F9D1F52D2CD4067F0079A391 /* main.swift */,
@@ -297,8 +298,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C32F00A42CAC5F0D0003CF23 /* adb in Resources */,
 				F92EA6222CA1E4E000218337 /* Preview Assets.xcassets in Resources */,
+				C3BCBD7D2CD5573E007DF11F /* adb in Resources */,
 				F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,6 +308,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3BCBD7C2CD547F2007DF11F /* adb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,7 +490,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -521,7 +523,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -549,7 +551,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DeviceManagerService/Info.plist;
@@ -571,7 +573,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DeviceManagerService/Info.plist;

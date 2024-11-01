@@ -20,5 +20,97 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "451018E8-373E-4B20-A5D5-58CE0AB1D970"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DeviceManagerService/DeviceManagerService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "runADBDevicesCount(with:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "451018E8-373E-4B20-A5D5-58CE0AB1D970 - ee241eb4df8d6af4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in AndroidSeeker.DeviceManagerService.runADBDevicesCount(with: (Swift.Int) -&gt; ()) -&gt; ()"
+                  moduleName = "AndroidSeeker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lgc/appMacOS/AndroidSeeker/DeviceManagerService/DeviceManagerService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46">
+               </Location>
+               <Location
+                  uuid = "451018E8-373E-4B20-A5D5-58CE0AB1D970 - c2f813c3f30503f0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in DeviceManagerService.DeviceManagerService.runADBDevicesCount(with: (Swift.Int) -&gt; ()) -&gt; ()"
+                  moduleName = "DeviceManagerService"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lgc/appMacOS/AndroidSeeker/DeviceManagerService/DeviceManagerService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9381C7B5-B48E-44BD-BCFC-752FF1E14CAC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DeviceManagerService/DeviceManagerService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "runADBDevicesCount(with:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9381C7B5-B48E-44BD-BCFC-752FF1E14CAC - ee241eb4df8d6970"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in AndroidSeeker.DeviceManagerService.runADBDevicesCount(with: (Swift.Int) -&gt; ()) -&gt; ()"
+                  moduleName = "AndroidSeeker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lgc/appMacOS/AndroidSeeker/DeviceManagerService/DeviceManagerService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42">
+               </Location>
+               <Location
+                  uuid = "9381C7B5-B48E-44BD-BCFC-752FF1E14CAC - c2f813c3f3050074"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in DeviceManagerService.DeviceManagerService.runADBDevicesCount(with: (Swift.Int) -&gt; ()) -&gt; ()"
+                  moduleName = "DeviceManagerService"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lgc/appMacOS/AndroidSeeker/DeviceManagerService/DeviceManagerService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
