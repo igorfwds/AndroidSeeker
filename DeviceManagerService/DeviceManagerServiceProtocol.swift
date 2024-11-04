@@ -12,6 +12,8 @@ import Foundation
     
     /// Replace the API of this protocol with an API appropriate to the service you are vending.
     func runADBDevicesCount(with reply: @escaping (Int) -> Void)
+    
+    func runADBDevices(with reply: @escaping (NSArray) -> Void)
 }
 
 /*

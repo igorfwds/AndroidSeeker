@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C3BCBD7C2CD547F2007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
 		C3BCBD7D2CD5573E007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
+		C3EFA6DE2CD956F30021C6F8 /* Structures.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDEC2CA47D970024B2CC /* Structures.swift */; };
 		F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */; };
 		F92EA61D2CA1E4DE00218337 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61C2CA1E4DE00218337 /* ContentView.swift */; };
 		F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA61E2CA1E4E000218337 /* Assets.xcassets */; };
@@ -346,6 +347,7 @@
 				F9D1F52A2CD4067F0079A391 /* DeviceManagerService.swift in Sources */,
 				F9D1F52C2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift in Sources */,
 				F9D1F52E2CD406800079A391 /* main.swift in Sources */,
+				C3EFA6DE2CD956F30021C6F8 /* Structures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
