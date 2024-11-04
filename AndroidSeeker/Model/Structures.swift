@@ -7,7 +7,7 @@
 
 import Foundation
 
-class File: Identifiable {
+class File: Identifiable, Codable {
     var id = UUID()
     var fileName : String
     var parentFile : String
@@ -20,7 +20,7 @@ class File: Identifiable {
     }
 }
 
-class Device: Identifiable {
+class Device: Identifiable, Codable{
     var id = UUID()
     var name: String
     var status: String
