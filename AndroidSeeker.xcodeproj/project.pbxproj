@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		C3BCBD7C2CD547F2007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
 		C3BCBD7D2CD5573E007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
+		C3EFA6CE2CD946170021C6F8 /* FileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EFA6CD2CD946170021C6F8 /* FileService.swift */; };
+		C3EFA6D22CD94CA60021C6F8 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EFA6D12CD94CA60021C6F8 /* DeviceService.swift */; };
+		C3EFA6D42CD94F510021C6F8 /* DeviceServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EFA6D32CD94F510021C6F8 /* DeviceServiceProtocol.swift */; };
+		C3EFA6D82CD954260021C6F8 /* FileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EFA6CD2CD946170021C6F8 /* FileService.swift */; };
+		C3EFA6D92CD9542A0021C6F8 /* DeviceServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EFA6D32CD94F510021C6F8 /* DeviceServiceProtocol.swift */; };
+		C3EFA6DA2CD954360021C6F8 /* DeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EFA6D12CD94CA60021C6F8 /* DeviceService.swift */; };
+		C3EFA6DC2CD954FB0021C6F8 /* FileServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3EFA6DB2CD954FB0021C6F8 /* FileServiceProtocol.swift */; };
 		F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */; };
 		F92EA61D2CA1E4DE00218337 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61C2CA1E4DE00218337 /* ContentView.swift */; };
 		F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA61E2CA1E4E000218337 /* Assets.xcassets */; };
@@ -60,6 +67,10 @@
 
 /* Begin PBXFileReference section */
 		C3BCBD7B2CD547F2007DF11F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
+		C3EFA6CD2CD946170021C6F8 /* FileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileService.swift; sourceTree = "<group>"; };
+		C3EFA6D12CD94CA60021C6F8 /* DeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceService.swift; sourceTree = "<group>"; };
+		C3EFA6D32CD94F510021C6F8 /* DeviceServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceServiceProtocol.swift; sourceTree = "<group>"; };
+		C3EFA6DB2CD954FB0021C6F8 /* FileServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileServiceProtocol.swift; sourceTree = "<group>"; };
 		F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidSeeker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidSeekerApp.swift; sourceTree = "<group>"; };
 		F92EA61C2CA1E4DE00218337 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -111,6 +122,17 @@
 				C3BCBD7B2CD547F2007DF11F /* adb */,
 			);
 			path = Resource;
+			sourceTree = "<group>";
+		};
+		C3EFA6D02CD94C6C0021C6F8 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				C3EFA6CD2CD946170021C6F8 /* FileService.swift */,
+				C3EFA6DB2CD954FB0021C6F8 /* FileServiceProtocol.swift */,
+				C3EFA6D12CD94CA60021C6F8 /* DeviceService.swift */,
+				C3EFA6D32CD94F510021C6F8 /* DeviceServiceProtocol.swift */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		F92EA60E2CA1E4DE00218337 = {
@@ -207,6 +229,7 @@
 		F9D1F5282CD4067F0079A391 /* DeviceManagerService */ = {
 			isa = PBXGroup;
 			children = (
+				C3EFA6D02CD94C6C0021C6F8 /* Classes */,
 				C3BCBD7A2CD547D5007DF11F /* Resource */,
 				F9D1F5292CD4067F0079A391 /* DeviceManagerService.swift */,
 				F9D1F52B2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift */,
@@ -332,10 +355,13 @@
 				F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */,
 				F998FE022CA496DD0024B2CC /* DeviceInternListView.swift in Sources */,
 				F92EA62C2CA1F0E100218337 /* DeviceManager.swift in Sources */,
+				C3EFA6D92CD9542A0021C6F8 /* DeviceServiceProtocol.swift in Sources */,
 				F9AA1EE42CCAD28C009BFB5D /* DeviceManager+.swift in Sources */,
 				F998FDF62CA484530024B2CC /* DeviceListTitleView.swift in Sources */,
 				F9D1F5392CD409AA0079A391 /* DeviceManagerService.swift in Sources */,
 				F998FDED2CA47D970024B2CC /* Structures.swift in Sources */,
+				C3EFA6D82CD954260021C6F8 /* FileService.swift in Sources */,
+				C3EFA6DA2CD954360021C6F8 /* DeviceService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,7 +371,11 @@
 			files = (
 				F9D1F52A2CD4067F0079A391 /* DeviceManagerService.swift in Sources */,
 				F9D1F52C2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift in Sources */,
+				C3EFA6CE2CD946170021C6F8 /* FileService.swift in Sources */,
+				C3EFA6D42CD94F510021C6F8 /* DeviceServiceProtocol.swift in Sources */,
 				F9D1F52E2CD406800079A391 /* main.swift in Sources */,
+				C3EFA6D22CD94CA60021C6F8 /* DeviceService.swift in Sources */,
+				C3EFA6DC2CD954FB0021C6F8 /* FileServiceProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

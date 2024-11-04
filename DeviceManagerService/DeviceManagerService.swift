@@ -6,9 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 /// This object implements the protocol which we have defined. It provides the actual behavior for the service. It is 'exported' by the service to make it available to the process hosting the service over an NSXPCConnection.
 class DeviceManagerService: NSObject, DeviceManagerServiceProtocol {
+    
+    
+    @Published var devices: [DeviceService] = []
     
     @objc func runADBDevicesCount(with reply: @escaping (Int) -> Void) {
         guard let url = Bundle(for: type(of: self)).url(forResource: "adb", withExtension: nil) else {
@@ -62,6 +66,51 @@ class DeviceManagerService: NSObject, DeviceManagerServiceProtocol {
             print("Erro ao rodar adb: \(error)")
             reply(0)
         }
+    }
+    
+    func runADBDevices() {
+        
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+        
+        let task = Process()
+        task.executableURL = url
+        task.arguments = ["devices"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            
+            DispatchQueue.main.async {
+                if !output.isEmpty {
+                    let lines = output.split(separator: "\n").map(String.init)
+                    self.devices = lines.dropFirst().compactMap { line in
+                        let components = line.split(separator: "\t").map(String.init)
+                        guard components.count > 1 else { return nil }
+                        return DeviceService(name: components[0], status: components[1], files: [])
+                    }
+                }
+            }
+            
+            if !errorOutput.isEmpty {
+                print("Erros do comando:\n\(errorOutput)")
+            }
+            
+        } catch {
+            print("Erro ao rodar adb: \(error)")
+        }
+        
     }
     
     
