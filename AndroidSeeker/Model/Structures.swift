@@ -7,7 +7,7 @@
 
 import Foundation
 
-class File: Identifiable, Codable {
+class File: NSObject, Identifiable, Codable {
     var id = UUID()
     var fileName : String
     var parentFile : String
@@ -20,13 +20,18 @@ class File: Identifiable, Codable {
     }
 }
 
-class Device: Identifiable, Codable{
-    var id = UUID()
+class Device: NSObject, Identifiable, Codable{
+    var id: String
     var name: String
     var status: String
     var files : [File]
     
-    init(name: String, status: String, files: [File]) {
+    override var description: String {
+            return "Device(id: \(id), name: \(name), status: \(status), files: \(files))"
+        }
+    
+    init(id: String, name: String, status: String, files: [File]) {
+        self.id = id
         self.name = name
         self.status = status
         self.files = files
@@ -69,10 +74,10 @@ var filesMock: [File] = [
 
 
 var deviceMock : [Device] = [
-    Device(name: "ÄDDCCBB$", status: "device", files: filesMock ),
-    Device(name: "465F4478", status: "offline", files: filesMock),
-    Device(name: "34DFZZ78", status: "unauthorized", files: filesMock),
-    Device(name: "89GFZZ78", status: "unauthorized", files: filesMock),
-    Device(name: "IGORFZZ78", status: "device", files: filesMock)
+    Device(id: "673241", name: "ÄDDCCBB$", status: "device", files: filesMock ),
+    Device(id: "3219", name: "465F4478", status: "offline", files: filesMock),
+    Device(id: "132987", name: "34DFZZ78", status: "unauthorized", files: filesMock),
+    Device(id: "27318", name: "89GFZZ78", status: "unauthorized", files: filesMock),
+    Device(id: "72381", name: "IGORFZZ78", status: "device", files: filesMock)
 ]
 

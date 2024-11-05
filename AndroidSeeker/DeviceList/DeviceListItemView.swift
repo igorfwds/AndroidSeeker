@@ -29,5 +29,5 @@ struct DeviceListItemView: View {
 }
 
 #Preview {
-    DeviceListItemView(device:  Device(name: "ABBC775F", status: "device", files: filesMock))
+    DeviceListItemView(device:  Device(id: "298374", name: "ABBC775F", status: "device", files: filesMock))
 }

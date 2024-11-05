@@ -20,11 +20,12 @@ struct AppHeaderRefreshButtonView: View {
             Button(action: {
 //                print(" ARRAY DO DICT \n =>\(deviceManager.compareFiles()) " )
                 deviceManager.isLoading = true
+                deviceManager.testPing()
+                deviceManager.runADBDevices()
                 Task {
-                    await deviceManager.runADBDevices()
                     devicesCheck()
                 }
-                deviceManager.devicesCountService()
+//                deviceManager.devicesCountService()
 //                print(deviceManager.devices)
                 
             

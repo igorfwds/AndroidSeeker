@@ -11,7 +11,10 @@ import Foundation
 @objc protocol DeviceManagerServiceProtocol {
     
     /// Replace the API of this protocol with an API appropriate to the service you are vending.
-    func runADBDevicesCount(with reply: @escaping (Int) -> Void)
+//    func runADBDevicesCount(with reply: @escaping (Int) -> Void)
+    
+    func runADBDevices(with reply: @escaping (String) -> Void) 
+    func ping(with reply: @escaping (String) -> Void)
 }
 
 /*
