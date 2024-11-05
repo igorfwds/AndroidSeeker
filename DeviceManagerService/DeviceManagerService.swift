@@ -68,7 +68,7 @@ class DeviceManagerService: NSObject, DeviceManagerServiceProtocol {
         }
     }
     
-    func runADBDevices() {
+    func runADBDevices(with reply: @escaping ([DeviceService]) -> Void) {
         
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
         
