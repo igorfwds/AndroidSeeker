@@ -58,9 +58,9 @@ class DeviceManager: ObservableObject {
                 guard let self = self else { return }
                 // Converte NSArray para [Device] de forma segura
                 self.devices = devicesArray.compactMap { $0 as? Device }
+                self.isLoading = false // Finaliza carregamento
             }
         }
-        self.isLoading = false // Finaliza carregamento
     }
     
     func runLsCommand(device: Device) {
