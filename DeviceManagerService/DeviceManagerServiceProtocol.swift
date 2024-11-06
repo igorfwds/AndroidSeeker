@@ -15,6 +15,7 @@ import Foundation
     
     func runADBDevices(with reply: @escaping (String) -> Void) 
     func ping(with reply: @escaping (String) -> Void)
+    func runLsCommand(deviceName: String, with reply: @escaping (String) -> Void)
 }
 
 /*

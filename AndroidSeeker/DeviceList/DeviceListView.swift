@@ -25,8 +25,8 @@ struct DeviceListView: View {
                             .onAppear{
                                 Task{
                                     await deviceManager.copyScreenshotDir(device: dev, isToggled: isToggled)
+                                    await deviceManager.runLsCommand(deviceName: dev.name)
                                 }
-                                deviceManager.runLsCommand(device: dev)
                                 
                             }) {
                                 DeviceListItemView(device: dev)

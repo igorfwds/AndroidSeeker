@@ -79,9 +79,6 @@ class DeviceManager: ObservableObject {
         self.isLoading = false
     }
     
-    
-    
-    
     // Teste de conexão ao serviço com método ping
     func testPing() async {
         guard let service = await XPCservice() else {
@@ -94,62 +91,90 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    
-    
-    
-    func runLsCommand(device: Device) {
-        //        isLoading = true
-        DispatchQueue.global(qos: .background).async {
-            let task = Process()
-            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
-            task.executableURL = url
-            task.arguments = ["-s", device.name, "shell", "ls"]
-            
-            let outputPipe = Pipe()
-            let errorPipe = Pipe()
-            
-            task.standardOutput = outputPipe
-            task.standardError = errorPipe
-            
-            do {
-                try task.run()
-                task.waitUntilExit()
+    func runLsCommand(deviceName: String) async {
+        guard let service = await XPCservice() else {
+            print("Erro: Conexão com o serviço XPC não foi estabelecida")
+            return
+        }
+        
+        service.runLsCommand(deviceName: deviceName) { fileJSONString in
+            DispatchQueue.main.async {
+                print("JSON bruto do ls recebido do serviço:", fileJSONString)
                 
-                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                let output = String(data: outputData, encoding: .utf8) ?? ""
-                
-                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                
-                
-                DispatchQueue.main.async {
-                    if !output.isEmpty {
-                        let directories = output.split(separator: "\n").map(String.init)
-                        
-                        
-                        let files = directories.map { dir in
-                            File(fileName: dir, parentFile: "/", subFiles: [])
-                        }
-                        
-                        
-                        if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
-                            self.devices[index].files = files
-                        }
+                do {
+                    guard let fileData = fileJSONString.data(using: .utf8) else {
+                        print("Falha ao converter JSON string do ls para Data")
+                        return
                     }
                     
-                    //                print("Arquivos do dispositivo \(device.name): \(files)")
+                    let files = try JSONDecoder().decode([File].self, from: fileData)
+                    print("Files decodificados:", files)
+                    
+                    if let index = self.devices.firstIndex(where: { $0.name == deviceName }) {
+                        self.devices[index].files = files
+                        print("Files no device \(self.devices[index].files)")
+                    }
+                } catch {
+                    print("Erro ao decodificar files: \(error)")
                 }
-                
-                if !errorOutput.isEmpty {
-                    //                print("Erros do comando:\n\(errorOutput)")
-                }
-                
-            } catch {
-                print("Erro ao rodar adb: \(error)")
             }
-            //            self.isLoading = false
         }
     }
+    
+    
+    //    func runLsCommand(device: Device) {
+    //        //        isLoading = true
+    //        DispatchQueue.global(qos: .background).async {
+    //            let task = Process()
+    //            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+    //            task.executableURL = url
+    //            task.arguments = ["-s", device.name, "shell", "ls"]
+    //
+    //            let outputPipe = Pipe()
+    //            let errorPipe = Pipe()
+    //
+    //            task.standardOutput = outputPipe
+    //            task.standardError = errorPipe
+    //
+    //            do {
+    //                try task.run()
+    //                task.waitUntilExit()
+    //
+    //                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+    //                let output = String(data: outputData, encoding: .utf8) ?? ""
+    //
+    //                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+    //                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+    //
+    //
+    //                DispatchQueue.main.async {
+    //                    if !output.isEmpty {
+    //                        let directories = output.split(separator: "\n").map(String.init)
+    //
+    //
+    //                        let files = directories.map { dir in
+    //                            File(fileName: dir, parentFile: "/", subFiles: [])
+    //                        }
+    //
+    //
+    //                        if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
+    //                            self.devices[index].files = files
+    //                        }
+    //                    }
+    //
+    //                    //                print("Arquivos do dispositivo \(device.name): \(files)")
+    //                }
+    //
+    //                if !errorOutput.isEmpty {
+    //                    //                print("Erros do comando:\n\(errorOutput)")
+    //                }
+    //
+    //            } catch {
+    //                print("Erro ao rodar adb: \(error)")
+    //            }
+    //            //            self.isLoading = false
+    //        }
+    //    }
     
     
     // Procurar Screenshot device
