@@ -17,7 +17,7 @@ class DeviceManager: ObservableObject {
     
     /// This implements the example protocol. Replace the body of this class with the implementation of this service's protocol.
     
-    private func conectar() {
+    private func conectar() async {
         self.connectionToService = NSXPCConnection(serviceName: "igor.cesar.learning.DeviceManagerService")
         self.connectionToService.remoteObjectInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
         
@@ -32,35 +32,35 @@ class DeviceManager: ObservableObject {
         
         self.connectionToService.resume()
     }
-
     
-    public func XPCservice() -> DeviceManagerServiceProtocol? {
+    
+    public func XPCservice() async -> DeviceManagerServiceProtocol? {
         if self.connectionToService == nil {
-            self.conectar()
+            await self.conectar()
         }
         return self.connectionToService?.remoteObjectProxyWithErrorHandler { error in
             NSLog("Erro de conexão ao recuperar serviço: \(error.localizedDescription)")
         } as? DeviceManagerServiceProtocol
     }
-
     
     
-//    func devicesCountService() {
-//        XPCservice().runADBDevicesCount(with: { count in
-//            print("Quantidade de devices conectados: \(count)")
-//        })
-//    }
     
-    func runADBDevices() {
-        guard let service = XPCservice() else {
+    //    func devicesCountService() {
+    //        XPCservice().runADBDevicesCount(with: { count in
+    //            print("Quantidade de devices conectados: \(count)")
+    //        })
+    //    }
+    
+    func runADBDevices() async {
+        guard let service = await XPCservice() else {
             print("Erro: Conexão com o serviço XPC não foi estabelecida.")
             return
         }
-
+        
         service.runADBDevices { deviceJSONString in
             DispatchQueue.main.async {
                 print("JSON bruto recebido do serviço:", deviceJSONString)  // Verificação do JSON recebido
-
+                
                 do {
                     guard let deviceData = deviceJSONString.data(using: .utf8) else {
                         print("Falha ao converter JSON string para Data")
@@ -76,22 +76,23 @@ class DeviceManager: ObservableObject {
                 }
             }
         }
+        self.isLoading = false
     }
-
-
-
-
+    
+    
+    
+    
     // Teste de conexão ao serviço com método ping
-       func testPing() {
-           guard let service = XPCservice() else {
-               print("Erro: Conexão com o serviço XPC não foi estabelecida.")
-               return
-           }
-           
-           service.ping { response in
-               print("Resposta do serviço XPC:", response)
-           }
-       }
+    func testPing() async {
+        guard let service = await XPCservice() else {
+            print("Erro: Conexão com o serviço XPC não foi estabelecida.")
+            return
+        }
+        
+        service.ping { response in
+            print("Resposta do serviço XPC:", response)
+        }
+    }
     
     
     
