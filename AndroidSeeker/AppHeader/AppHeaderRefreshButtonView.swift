@@ -21,9 +21,11 @@ struct AppHeaderRefreshButtonView: View {
 //                print(" ARRAY DO DICT \n =>\(deviceManager.compareFiles()) " )
                 deviceManager.isLoading = true
                 Task {
+                    await deviceManager.testPing()
                     await deviceManager.runADBDevices()
                     devicesCheck()
                 }
+//                deviceManager.devicesCountService()
 //                print(deviceManager.devices)
                 
             
@@ -47,9 +49,9 @@ struct AppHeaderRefreshButtonView: View {
             
             
         }
-        .alert(isPresented: $showAlert){
-            Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
-        }
+//        .alert(isPresented: $showAlert){
+//            Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
+//        }
         
         Toggle(isOn: $isToggled) {
             Text("Manter arquivos apagados")
