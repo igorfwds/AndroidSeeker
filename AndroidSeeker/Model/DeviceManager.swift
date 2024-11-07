@@ -14,6 +14,34 @@ class DeviceManager: ObservableObject {
     
     @Published var devices: [Device] = []
     @Published var isLoading = false
+    
+    
+    private func conectar() async {
+            self.connectionToService = NSXPCConnection(serviceName: "igor.cesar.learning.DeviceManagerService")
+            self.connectionToService.remoteObjectInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
+            
+            self.connectionToService.interruptionHandler = {
+                NSLog("Conexão interrompida")
+                self.connectionToService = nil
+            }
+            self.connectionToService.invalidationHandler = {
+                NSLog("Conexão invalidada")
+                self.connectionToService = nil
+            }
+            
+            self.connectionToService.resume()
+        }
+        
+        
+        public func XPCservice() async -> DeviceManagerServiceProtocol? {
+            if self.connectionToService == nil {
+                await self.conectar()
+            }
+            return self.connectionToService?.remoteObjectProxyWithErrorHandler { error in
+                NSLog("Erro de conexão ao recuperar serviço: \(error.localizedDescription)")
+            } as? DeviceManagerServiceProtocol
+        }
+
 
     /// This implements the example protocol. Replace the body of this class with the implementation of this service's protocol.
     func runADBDevices() async {
@@ -62,37 +90,37 @@ class DeviceManager: ObservableObject {
         
     }
     
-    private func conectar() {
-        self.connectionToService = NSXPCConnection(serviceName: "igor.cesar.learning.DeviceManagerService")
-        self.connectionToService.remoteObjectInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
-        self.connectionToService.exportedObject = self
-        self.connectionToService.exportedInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
-        self.connectionToService.interruptionHandler = {
-          NSLog("Conexão interrompida")
-          self.connectionToService = nil
-        }
-        self.connectionToService.invalidationHandler = {
-          NSLog("Conexão invalidada")
-          self.connectionToService = nil
-        }
-        self.connectionToService.resume()
-    }
-
-    public func XPCservice() -> DeviceManagerServiceProtocol {
-        if self.connectionToService == nil {
-            self.conectar()
-        }
-        return self.connectionToService.remoteObjectProxyWithErrorHandler { (error) in
-            NSLog("Erro de conexão ao recuperar serviço: ", error.localizedDescription)
-        } as! DeviceManagerServiceProtocol
-    }
+//    private func conectar() {
+//        self.connectionToService = NSXPCConnection(serviceName: "igor.cesar.learning.DeviceManagerService")
+//        self.connectionToService.remoteObjectInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
+//        self.connectionToService.exportedObject = self
+//        self.connectionToService.exportedInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
+//        self.connectionToService.interruptionHandler = {
+//          NSLog("Conexão interrompida")
+//          self.connectionToService = nil
+//        }
+//        self.connectionToService.invalidationHandler = {
+//          NSLog("Conexão invalidada")
+//          self.connectionToService = nil
+//        }
+//        self.connectionToService.resume()
+//    }
+//
+//    public func XPCservice() -> DeviceManagerServiceProtocol {
+//        if self.connectionToService == nil {
+//            self.conectar()
+//        }
+//        return self.connectionToService.remoteObjectProxyWithErrorHandler { (error) in
+//            NSLog("Erro de conexão ao recuperar serviço: ", error.localizedDescription)
+//        } as! DeviceManagerServiceProtocol
+//    }
     
 //    func runADBDevices() async {
 //        XPCservice().runADBDevices()
 //    }
     
-    func devicesCountService() {
-        XPCservice().runADBDevicesCount(with: { count in
+    func devicesCountService() async {
+        await XPCservice()?.runADBDevicesCount(with: { count in
             print("Quantidade de devices conectados: \(count)")
         })
     }

@@ -8,7 +8,7 @@
 import Foundation
 
 @objc(DeviceService)
-class DeviceService: NSObject, Identifiable, Codable, DeviceProtocol {    
+public class DeviceService: NSObject, Identifiable, Codable, DeviceProtocol {
     public var id = UUID()
     public var name: String
     public var status: String
