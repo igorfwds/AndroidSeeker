@@ -20,7 +20,7 @@ extension DeviceManager {
             let directoryContents = try fileManager.contentsOfDirectory(atPath: desktopPath)
             for fileName in directoryContents {
                 // Cria um objeto File para cada arquivo encontrado
-                files.append(File(id: UUID().uuidString, fileName: fileName, parentFile: desktopPath, subFiles: []))
+                files.append(File(fileName: fileName, parentFile: desktopPath, subFiles: []))
             }
         } catch {
             print("Erro ao obter arquivos do Mac: \(error.localizedDescription)")
@@ -50,7 +50,7 @@ extension DeviceManager {
             let output = String(data: outputData, encoding: .utf8) ?? ""
             
             let fileNames = output.split(separator: "\n").map(String.init)
-            return fileNames.map { File(id: UUID().uuidString, fileName: $0, parentFile: "/", subFiles: []) } // Adaptar conforme necessário
+            return fileNames.map { File(fileName: $0, parentFile: "/", subFiles: []) } // Adaptar conforme necessário
         } catch {
             print("Erro ao obter arquivos do dispositivo: \(error.localizedDescription)")
             return []

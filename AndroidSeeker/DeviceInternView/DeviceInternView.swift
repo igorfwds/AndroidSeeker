@@ -29,7 +29,7 @@ struct DeviceInternView: View {
 
 
 #Preview {
-    DeviceInternView(device: Device(id: "298374", name: deviceMock[0].name, status: deviceMock[0].status, files: deviceMock[0].files))
+    DeviceInternView(device: Device(name: deviceMock[0].name, status: deviceMock[0].status, files: deviceMock[0].files))
         .environmentObject(DeviceManager())
     
 }
