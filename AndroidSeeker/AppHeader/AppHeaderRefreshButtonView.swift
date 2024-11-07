@@ -22,9 +22,9 @@ struct AppHeaderRefreshButtonView: View {
                 deviceManager.isLoading = true
                 Task {
                     await deviceManager.runADBDevices()
+                    deviceManager.devicesCountService()
                     devicesCheck()
                 }
-                deviceManager.devicesCountService()
 //                print(deviceManager.devices)
                 
             
