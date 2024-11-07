@@ -45,11 +45,6 @@ struct DeviceListView: View {
                         .frame(minWidth: 1600)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
-                        .onAppear{
-                            print("AQUI ESTAO OS DEVICES")
-                            print(deviceManager.devices)
-                        }
-                    
                 }
             }
             

@@ -74,9 +74,9 @@ class DeviceManager: ObservableObject {
                 } catch {
                     print("Erro ao decodificar devices: \(error)")
                 }
+                self.isLoading = false
             }
         }
-        self.isLoading = false
     }
     
     // Teste de conexão ao serviço com método ping

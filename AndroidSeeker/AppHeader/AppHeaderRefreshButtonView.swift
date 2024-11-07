@@ -49,9 +49,9 @@ struct AppHeaderRefreshButtonView: View {
             
             
         }
-        .alert(isPresented: $showAlert){
-            Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
-        }
+//        .alert(isPresented: $showAlert){
+//            Alert(title: Text("Android Seeker"), message: Text("Nenhum dispositivo encontrado."), dismissButton: .default(Text("Ok")))
+//        }
         
         Toggle(isOn: $isToggled) {
             Text("Manter arquivos apagados")
