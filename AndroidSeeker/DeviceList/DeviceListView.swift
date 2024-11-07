@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DeviceListView: View {
-    //    @State private var notFoundMessage
+//    @State private var notFoundMessage
     @EnvironmentObject private var deviceManager : DeviceManager
     @Binding var isToggled: Bool
     
@@ -21,38 +21,33 @@ struct DeviceListView: View {
             VStack(alignment: .leading, spacing: 30) {
                 if !deviceManager.devices.isEmpty {
                     ForEach(deviceManager.devices) { dev in
-                        NavigationLink(destination: DeviceInternView(device: dev)
-                            .onAppear{
-                                deviceManager.isLoading = true
-                                Task{
-                                    await deviceManager.copyScreenshotDir(device: dev, isToggled: isToggled)
-                                    await deviceManager.runLsCommand(deviceName: dev.name)
+                                NavigationLink(destination: DeviceInternView(device: dev)
+                                    .onAppear{
+                                        Task{
+                                            await deviceManager.copyScreenshotDir(device: dev, isToggled: isToggled)
+                                        }
+                                        deviceManager.runLsCommand(device: dev)
+                                    
+                                }) {
+                                    DeviceListItemView(device: dev)
+                                        
                                 }
                                 
-                            }) {
-                                DeviceListItemView(device: dev)
-                                
-                            }
-                        
-                            .cornerRadius(50)
-                    }
-                    .onAppear{
-                        print("AQUI ESTAO OS DEVICES")
-                        print(deviceManager.devices)
+                                .cornerRadius(50)
                     }
                 }else{
                     
-                    ContentUnavailableView("Nehum Dispositivo Encontrado...", systemImage: "iphone.gen3.slash", description: Text("Favor apertar o botão de buscar."))
-                        .frame(minWidth: 1600)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
+                        ContentUnavailableView("Nehum Dispositivo Encontrado...", systemImage: "iphone.gen3.slash", description: Text("Favor apertar o botão de buscar."))
+                            .frame(minWidth: 1600)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                    
                 }
-            }
-            
+                    }
             .padding()
         }
+        }
     }
-}
 
 
 

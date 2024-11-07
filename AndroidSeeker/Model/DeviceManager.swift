@@ -10,173 +10,109 @@ import Combine
 
 class DeviceManager: ObservableObject {
     
-    private var connectionToService: NSXPCConnection!
-    
     @Published var devices: [Device] = []
     @Published var isLoading = false
     
-    /// This implements the example protocol. Replace the body of this class with the implementation of this service's protocol.
-    
-    private func conectar() async {
-        self.connectionToService = NSXPCConnection(serviceName: "igor.cesar.learning.DeviceManagerService")
-        self.connectionToService.remoteObjectInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
-        
-        self.connectionToService.interruptionHandler = {
-            NSLog("Conexão interrompida")
-            self.connectionToService = nil
-        }
-        self.connectionToService.invalidationHandler = {
-            NSLog("Conexão invalidada")
-            self.connectionToService = nil
-        }
-        
-        self.connectionToService.resume()
-    }
-    
-    
-    public func XPCservice() async -> DeviceManagerServiceProtocol? {
-        if self.connectionToService == nil {
-            await self.conectar()
-        }
-        return self.connectionToService?.remoteObjectProxyWithErrorHandler { error in
-            NSLog("Erro de conexão ao recuperar serviço: \(error.localizedDescription)")
-        } as? DeviceManagerServiceProtocol
-    }
-    
-    
-    
-    //    func devicesCountService() {
-    //        XPCservice().runADBDevicesCount(with: { count in
-    //            print("Quantidade de devices conectados: \(count)")
-    //        })
-    //    }
-    
     func runADBDevices() async {
-        guard let service = await XPCservice() else {
-            print("Erro: Conexão com o serviço XPC não foi estabelecida.")
-            return
-        }
         
-        service.runADBDevices { deviceJSONString in
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+        
+        let task = Process()
+        task.executableURL = url
+        task.arguments = ["devices"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            
             DispatchQueue.main.async {
-                print("JSON bruto recebido do serviço:", deviceJSONString)  // Verificação do JSON recebido
-                
-                do {
-                    guard let deviceData = deviceJSONString.data(using: .utf8) else {
-                        print("Falha ao converter JSON string para Data")
-                        return
+                if !output.isEmpty {
+                    let lines = output.split(separator: "\n").map(String.init)
+                    self.devices = lines.dropFirst().compactMap { line in
+                        let components = line.split(separator: "\t").map(String.init)
+                        guard components.count > 1 else { return nil }
+                        return Device(name: components[0], status: components[1], files: [])
                     }
-                    
-                    let devices = try JSONDecoder().decode([Device].self, from: deviceData)
-                    print("Devices decodificados:", devices)
-                    self.devices = devices  // Atualiza a lista de dispositivos
-                    
-                } catch {
-                    print("Erro ao decodificar devices: \(error)")
+                    self.isLoading = false
                 }
-                self.isLoading = false
             }
-        }
-    }
-    
-    // Teste de conexão ao serviço com método ping
-    func testPing() async {
-        guard let service = await XPCservice() else {
-            print("Erro: Conexão com o serviço XPC não foi estabelecida.")
-            return
+            
+            if !errorOutput.isEmpty {
+                print("Erros do comando:\n\(errorOutput)")
+            }
+            
+        } catch {
+            print("Erro ao rodar adb: \(error)")
         }
         
-        service.ping { response in
-            print("Resposta do serviço XPC:", response)
-        }
     }
     
-    func runLsCommand(deviceName: String) async {
-        self.isLoading = true
-        guard let service = await XPCservice() else {
-            print("Erro: Conexão com o serviço XPC não foi estabelecida")
-            return
-        }
-        
-        service.runLsCommand(deviceName: deviceName) { fileJSONString in
-            DispatchQueue.main.async {
-                print("JSON bruto do ls recebido do serviço:", fileJSONString)
+    
+    func runLsCommand(device: Device) {
+        //        isLoading = true
+        DispatchQueue.global(qos: .background).async {
+            let task = Process()
+            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
+            task.executableURL = url
+            task.arguments = ["-s", device.name, "shell", "ls"]
+            
+            let outputPipe = Pipe()
+            let errorPipe = Pipe()
+            
+            task.standardOutput = outputPipe
+            task.standardError = errorPipe
+            
+            do {
+                try task.run()
+                task.waitUntilExit()
                 
-                do {
-                    guard let fileData = fileJSONString.data(using: .utf8) else {
-                        print("Falha ao converter JSON string do ls para Data")
-                        return
+                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                
+                
+                DispatchQueue.main.async {
+                    if !output.isEmpty {
+                        let directories = output.split(separator: "\n").map(String.init)
+                        
+                        
+                        let files = directories.map { dir in
+                            File(fileName: dir, parentFile: "/", subFiles: [])
+                        }
+                        
+                        
+                        if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
+                            self.devices[index].files = files
+                        }
                     }
                     
-                    let files = try JSONDecoder().decode([File].self, from: fileData)
-                    print("==========>Files decodificados:", files)
-                    
-                    if let index = self.devices.firstIndex(where: { $0.name == deviceName }) {
-                        self.devices[index].files = files
-                        print("=======================================================\nFiles no device \(self.devices[index].files)\n================================================")
-                    }
-                } catch {
-                    print("Erro ao decodificar files: \(error)")
+                    //                print("Arquivos do dispositivo \(device.name): \(files)")
                 }
-                self.isLoading = false
+                
+                if !errorOutput.isEmpty {
+                    //                print("Erros do comando:\n\(errorOutput)")
+                }
+                
+            } catch {
+                print("Erro ao rodar adb: \(error)")
             }
+            //            self.isLoading = false
         }
     }
-    
-    
-    //    func runLsCommand(device: Device) {
-    //        //        isLoading = true
-    //        DispatchQueue.global(qos: .background).async {
-    //            let task = Process()
-    //            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
-    //            task.executableURL = url
-    //            task.arguments = ["-s", device.name, "shell", "ls"]
-    //
-    //            let outputPipe = Pipe()
-    //            let errorPipe = Pipe()
-    //
-    //            task.standardOutput = outputPipe
-    //            task.standardError = errorPipe
-    //
-    //            do {
-    //                try task.run()
-    //                task.waitUntilExit()
-    //
-    //                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-    //                let output = String(data: outputData, encoding: .utf8) ?? ""
-    //
-    //                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-    //                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-    //
-    //
-    //                DispatchQueue.main.async {
-    //                    if !output.isEmpty {
-    //                        let directories = output.split(separator: "\n").map(String.init)
-    //
-    //
-    //                        let files = directories.map { dir in
-    //                            File(fileName: dir, parentFile: "/", subFiles: [])
-    //                        }
-    //
-    //
-    //                        if let index = self.devices.firstIndex(where: { $0.id == device.id }) {
-    //                            self.devices[index].files = files
-    //                        }
-    //                    }
-    //
-    //                    //                print("Arquivos do dispositivo \(device.name): \(files)")
-    //                }
-    //
-    //                if !errorOutput.isEmpty {
-    //                    //                print("Erros do comando:\n\(errorOutput)")
-    //                }
-    //
-    //            } catch {
-    //                print("Erro ao rodar adb: \(error)")
-    //            }
-    //            //            self.isLoading = false
-    //        }
-    //    }
     
     
     // Procurar Screenshot device
@@ -263,7 +199,7 @@ class DeviceManager: ObservableObject {
                 
                 let deviceFilesDate = getDeviceFileDate(device: device, deviceDirectoryFiles: deviceDirectoryFiles, path: screenshotDir)
                 let desktopFilesDate = getDesktopFileDate(desktopPath: desktopPath, desktopDirectoryFiles: desktopDirectoryFiles)
-                
+
                 
                 let task = Process()
                 task.executableURL = url
@@ -282,37 +218,37 @@ class DeviceManager: ObservableObject {
                     
                     modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
                     
-                    //                    task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
-                    //
-                    //                    let outputPipe = Pipe()
-                    //                    let errorPipe = Pipe()
-                    //
-                    //                    task.standardOutput = outputPipe
-                    //                    task.standardError = errorPipe
-                    //
-                    //                    do {
-                    //                        try task.run()
-                    //                        task.waitUntilExit()
-                    //
-                    //                        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                    //                        let output = String(data: outputData, encoding: .utf8) ?? ""
-                    //
-                    //                        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                    //                        let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                    //                        DispatchQueue.main.async {
-                    //                            if !output.isEmpty {
-                    //                                print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
-                    //
-                    //                            }
-                    //
-                    //                            if !errorOutput.isEmpty {
-                    //                                print("Erros do comando PULL:\n\(errorOutput)")
-                    //                            }
-                    //                        }
-                    //
-                    //                    } catch {
-                    //                        print("Erro ao rodar adb: \(error)")
-                    //                    }
+//                    task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
+//                    
+//                    let outputPipe = Pipe()
+//                    let errorPipe = Pipe()
+//                    
+//                    task.standardOutput = outputPipe
+//                    task.standardError = errorPipe
+//                    
+//                    do {
+//                        try task.run()
+//                        task.waitUntilExit()
+//                        
+//                        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+//                        let output = String(data: outputData, encoding: .utf8) ?? ""
+//                        
+//                        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+//                        let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+//                        DispatchQueue.main.async {
+//                            if !output.isEmpty {
+//                                print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
+//                                
+//                            }
+//                            
+//                            if !errorOutput.isEmpty {
+//                                print("Erros do comando PULL:\n\(errorOutput)")
+//                            }
+//                        }
+//                        
+//                    } catch {
+//                        print("Erro ao rodar adb: \(error)")
+//                    }
                 }
             } else {
                 print("\nDiretório não encontrado no caminho: \(path)")
@@ -491,7 +427,7 @@ class DeviceManager: ObservableObject {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Define o formato de entrada da string
         dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Garante a consistência do formato
-        print("\nData formatada => \(String(describing: dateFormatter.date(from: dateString)))") //se der problema na data foi o describing
+        print("\nData formatada => \(dateFormatter.date(from: dateString))")
         print("Data recebida => \(dateString)")
         return dateFormatter.date(from: dateString)
     }

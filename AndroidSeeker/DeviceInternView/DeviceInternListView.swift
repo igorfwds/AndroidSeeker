@@ -24,6 +24,6 @@ struct DeviceInternListView: View {
     }}
 
 #Preview {
-    DeviceInternListView(device: Device(id: "298374", name: deviceMock[0].name, status: deviceMock[0].status, files: deviceMock[0].files))
+    DeviceInternListView(device: Device(id: deviceMock[0].id  , name: deviceMock[0].name, status: deviceMock[0].status, files: deviceMock[0].files))
 }
 

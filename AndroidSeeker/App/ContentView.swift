@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var adbOutput: String = "Pressione o botão para listar dispositivos"
-//    @StateObject private var deviceManager = DeviceManager()
+    @StateObject private var deviceManager = DeviceManager()
     @AppStorage ("isToggled") private var isToggled: Bool = UserDefaults.standard.isToggled
     
     var body: some View {
@@ -22,6 +22,7 @@ struct ContentView: View {
                 
             }
             .padding()
+            .environmentObject(deviceManager)
         }
     }
 }
@@ -29,7 +30,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(DeviceManager())
-
 }
 

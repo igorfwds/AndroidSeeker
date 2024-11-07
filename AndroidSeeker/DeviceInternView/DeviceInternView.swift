@@ -12,24 +12,12 @@ struct DeviceInternView: View {
     var device: Device
     
     var body: some View {
-        
-        if deviceManager.isLoading{
-            ProgressView()
-        }
-        else {
-            DeviceInternListView(device: device)
-                .onAppear{
-                    print("||||||||||||||||||||||||||||||||||||||||||||||||||||\nNOME E FILES DO DEVICE CLICADO")
-                    print(device.name)
-                    print(device.files)
-                }
-        }
+        DeviceInternListView(device: device)
     }
 }
 
-
 #Preview {
-    DeviceInternView(device: Device(id: "298374", name: deviceMock[0].name, status: deviceMock[0].status, files: deviceMock[0].files))
+    DeviceInternView(device: Device(id: deviceMock[0].id  , name: deviceMock[0].name, status: deviceMock[0].status, files: deviceMock[0].files))
         .environmentObject(DeviceManager())
     
 }

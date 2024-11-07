@@ -31,5 +31,5 @@ struct DeviceInternListItemView: View {
 }
 
 #Preview {
-    DeviceInternListItemView(file: File(id: "46578", fileName: "test", parentFile: "root", subFiles: subFilesMock))
+    DeviceInternListItemView(file: File(fileName: "test", parentFile: "root", subFiles: subFilesMock))
 }
