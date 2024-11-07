@@ -92,6 +92,7 @@ class DeviceManager: ObservableObject {
     }
     
     func runLsCommand(deviceName: String) async {
+        self.isLoading = true
         guard let service = await XPCservice() else {
             print("Erro: Conexão com o serviço XPC não foi estabelecida")
             return
@@ -108,15 +109,16 @@ class DeviceManager: ObservableObject {
                     }
                     
                     let files = try JSONDecoder().decode([File].self, from: fileData)
-                    print("Files decodificados:", files)
+                    print("==========>Files decodificados:", files)
                     
                     if let index = self.devices.firstIndex(where: { $0.name == deviceName }) {
                         self.devices[index].files = files
-                        print("Files no device \(self.devices[index].files)")
+                        print("=======================================================\nFiles no device \(self.devices[index].files)\n================================================")
                     }
                 } catch {
                     print("Erro ao decodificar files: \(error)")
                 }
+                self.isLoading = false
             }
         }
     }

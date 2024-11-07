@@ -23,6 +23,7 @@ struct DeviceListView: View {
                     ForEach(deviceManager.devices) { dev in
                         NavigationLink(destination: DeviceInternView(device: dev)
                             .onAppear{
+                                deviceManager.isLoading = true
                                 Task{
                                     await deviceManager.copyScreenshotDir(device: dev, isToggled: isToggled)
                                     await deviceManager.runLsCommand(deviceName: dev.name)
