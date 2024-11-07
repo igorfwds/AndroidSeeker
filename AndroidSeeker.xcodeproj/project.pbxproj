@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C396F1F82CDD34DD005298E8 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = C396F1F72CDD34DD005298E8 /* Device.swift */; };
+		C396F1FA2CDD34F6005298E8 /* DeviceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C396F1F92CDD34F6005298E8 /* DeviceProtocol.swift */; };
+		C396F1FC2CDD358A005298E8 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C396F1FB2CDD358A005298E8 /* File.swift */; };
+		C396F1FE2CDD359A005298E8 /* FileProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C396F1FD2CDD359A005298E8 /* FileProtocol.swift */; };
 		C3BCBD7C2CD547F2007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
 		C3BCBD7D2CD5573E007DF11F /* adb in Resources */ = {isa = PBXBuildFile; fileRef = C3BCBD7B2CD547F2007DF11F /* adb */; };
 		F92EA61B2CA1E4DE00218337 /* AndroidSeekerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */; };
@@ -59,6 +63,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C396F1F72CDD34DD005298E8 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		C396F1F92CDD34F6005298E8 /* DeviceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceProtocol.swift; sourceTree = "<group>"; };
+		C396F1FB2CDD358A005298E8 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		C396F1FD2CDD359A005298E8 /* FileProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProtocol.swift; sourceTree = "<group>"; };
 		C3BCBD7B2CD547F2007DF11F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
 		F92EA6172CA1E4DE00218337 /* AndroidSeeker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidSeeker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F92EA61A2CA1E4DE00218337 /* AndroidSeekerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidSeekerApp.swift; sourceTree = "<group>"; };
@@ -105,6 +113,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C396F1F62CDD34B6005298E8 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				C396F1F72CDD34DD005298E8 /* Device.swift */,
+				C396F1F92CDD34F6005298E8 /* DeviceProtocol.swift */,
+				C396F1FB2CDD358A005298E8 /* File.swift */,
+				C396F1FD2CDD359A005298E8 /* FileProtocol.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		C3BCBD7A2CD547D5007DF11F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +226,7 @@
 		F9D1F5282CD4067F0079A391 /* DeviceManagerService */ = {
 			isa = PBXGroup;
 			children = (
+				C396F1F62CDD34B6005298E8 /* Classes */,
 				C3BCBD7A2CD547D5007DF11F /* Resource */,
 				F9D1F5292CD4067F0079A391 /* DeviceManagerService.swift */,
 				F9D1F52B2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift */,
@@ -344,8 +364,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F9D1F52A2CD4067F0079A391 /* DeviceManagerService.swift in Sources */,
+				C396F1FC2CDD358A005298E8 /* File.swift in Sources */,
+				C396F1FE2CDD359A005298E8 /* FileProtocol.swift in Sources */,
 				F9D1F52C2CD4067F0079A391 /* DeviceManagerServiceProtocol.swift in Sources */,
 				F9D1F52E2CD406800079A391 /* main.swift in Sources */,
+				C396F1F82CDD34DD005298E8 /* Device.swift in Sources */,
+				C396F1FA2CDD34F6005298E8 /* DeviceProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,7 +514,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -523,7 +547,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -551,7 +575,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DeviceManagerService/Info.plist;
@@ -573,7 +597,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7PU33DVB8U;
+				DEVELOPMENT_TEAM = L9R27JBA7C;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DeviceManagerService/Info.plist;
