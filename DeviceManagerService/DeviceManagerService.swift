@@ -54,7 +54,14 @@ import Foundation
                                 print("Device adicionado ao array: \(self.devices)")
                             }
                         }
-                        reply(devicesArray)
+                        
+                        do {
+                            let data = try NSKeyedArchiver.archivedData(withRootObject: devicesArray, requiringSecureCoding: true)
+                            reply(data) // Você pode devolver `devicesArray` diretamente ou, se necessário, enviar a `data`
+                        } catch {
+                            print("Erro ao serializar dispositivos:", error)
+                            reply([]) // Retorna um array vazio se houver erro
+                        }
                     } else {
                         print("Comando adb devices não retornou saída.")
                         reply([]) // Retorna JSON vazio se não houver saída
