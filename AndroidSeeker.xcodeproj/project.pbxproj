@@ -22,6 +22,8 @@
 		F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA61E2CA1E4E000218337 /* Assets.xcassets */; };
 		F92EA6222CA1E4E000218337 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F92EA6212CA1E4E000218337 /* Preview Assets.xcassets */; };
 		F92EA62C2CA1F0E100218337 /* DeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F92EA62B2CA1F0E100218337 /* DeviceManager.swift */; };
+		F96231CB2CDE50230070E68E /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = F96231CA2CDE50230070E68E /* .gitignore */; };
+		F96231CC2CDE50230070E68E /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = F96231CA2CDE50230070E68E /* .gitignore */; };
 		F998FDED2CA47D970024B2CC /* Structures.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDEC2CA47D970024B2CC /* Structures.swift */; };
 		F998FDEF2CA481450024B2CC /* DeviceListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDEE2CA481450024B2CC /* DeviceListItemView.swift */; };
 		F998FDF12CA481630024B2CC /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F998FDF02CA481630024B2CC /* DeviceListView.swift */; };
@@ -79,6 +81,7 @@
 		F92EA6212CA1E4E000218337 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F92EA6232CA1E4E000218337 /* AndroidSeeker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AndroidSeeker.entitlements; sourceTree = "<group>"; };
 		F92EA62B2CA1F0E100218337 /* DeviceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceManager.swift; sourceTree = "<group>"; };
+		F96231CA2CDE50230070E68E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		F998FDEC2CA47D970024B2CC /* Structures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structures.swift; sourceTree = "<group>"; };
 		F998FDEE2CA481450024B2CC /* DeviceListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListItemView.swift; sourceTree = "<group>"; };
 		F998FDF02CA481630024B2CC /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
@@ -139,6 +142,7 @@
 		F92EA60E2CA1E4DE00218337 = {
 			isa = PBXGroup;
 			children = (
+				F96231CA2CDE50230070E68E /* .gitignore */,
 				F92EA6192CA1E4DE00218337 /* AndroidSeeker */,
 				F9D1F5282CD4067F0079A391 /* DeviceManagerService */,
 				F92EA6182CA1E4DE00218337 /* Products */,
@@ -322,6 +326,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F96231CB2CDE50230070E68E /* .gitignore in Resources */,
 				F92EA6222CA1E4E000218337 /* Preview Assets.xcassets in Resources */,
 				C3BCBD7D2CD5573E007DF11F /* adb in Resources */,
 				F92EA61F2CA1E4E000218337 /* Assets.xcassets in Resources */,
@@ -332,6 +337,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F96231CC2CDE50230070E68E /* .gitignore in Resources */,
 				C3BCBD7C2CD547F2007DF11F /* adb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -522,7 +528,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -555,7 +561,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AndroidSeeker/Preview Content\"";
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -583,7 +589,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DeviceManagerService/Info.plist;
@@ -605,7 +611,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L9R27JBA7C;
+				DEVELOPMENT_TEAM = 7PU33DVB8U;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DeviceManagerService/Info.plist;
