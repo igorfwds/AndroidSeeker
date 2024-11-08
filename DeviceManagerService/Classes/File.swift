@@ -8,13 +8,12 @@
 import Foundation
 
 @objc(File)
-public class File: NSObject, Identifiable, NSSecureCoding, FileProtocol {
-    public static let supportsSecureCoding: Bool = true
+public class File: NSObject, Identifiable, Codable, FileProtocol {
     
     public var id: UUID
-    public var fileName : String
-    public var parentFile : String
-    public var subFiles : [File]
+    public var fileName: String
+    public var parentFile: String
+    public var subFiles: [File]
     
     public init(fileName: String, parentFile: String, subFiles: [File]) {
         self.id = UUID()
@@ -23,24 +22,17 @@ public class File: NSObject, Identifiable, NSSecureCoding, FileProtocol {
         self.subFiles = subFiles
     }
     
-    public func encode(with coder: NSCoder) {
-        coder.encode(id.uuidString, forKey: "id")
-        coder.encode(fileName, forKey: "fileName")
-        coder.encode(parentFile, forKey: "parentFile")
-        coder.encode(subFiles, forKey: "subFiles")
+    // MARK: - Decodable
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        fileName = try container.decode(String.self, forKey: .fileName)
+        parentFile = try container.decode(String.self, forKey: .parentFile)
+        subFiles = try container.decode([File].self, forKey: .subFiles)
     }
     
-    public required init?(coder: NSCoder) {
-        guard let idString = coder.decodeObject(of: NSString.self, forKey: "id"),
-              let uuid = UUID(uuidString: idString as String),
-              let fileName = coder.decodeObject(of: NSString.self, forKey: "fileName") as? String,
-              let parentFile = coder.decodeObject(of: NSString.self, forKey: "parentFile") as? String,
-              let subFilesArray = coder.decodeObject(of: NSArray.self, forKey: "subFiles") as? [File] else {
-            return nil
-        }
-        self.id = uuid
-        self.fileName = fileName
-        self.parentFile = parentFile
-        self.subFiles = subFilesArray
+    enum CodingKeys: String, CodingKey {
+        case id, fileName, parentFile, subFiles
     }
 }
+

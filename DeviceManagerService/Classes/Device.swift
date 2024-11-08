@@ -8,8 +8,7 @@
 import Foundation
 
 @objc(Device)
-public class Device: NSObject, Identifiable, NSSecureCoding, DeviceProtocol {
-    public static let supportsSecureCoding: Bool = true
+public class Device: NSObject, Identifiable, Codable, DeviceProtocol {
     
     public var id: UUID
     public var name: String
@@ -23,24 +22,16 @@ public class Device: NSObject, Identifiable, NSSecureCoding, DeviceProtocol {
         self.files = files
     }
     
-    public func encode(with coder: NSCoder) {
-        coder.encode(id.uuidString, forKey: "id")
-        coder.encode(name, forKey: "name")
-        coder.encode(status, forKey: "status")
-        coder.encode(files, forKey: "files")
-    }
-    
-    public required init?(coder: NSCoder) {
-        guard let idString = coder.decodeObject(of: NSString.self, forKey: "id"),
-              let uuid = UUID(uuidString: idString as String),
-              let name = coder.decodeObject(of: NSString.self, forKey: "name") as? String,
-              let status = coder.decodeObject(of: NSString.self, forKey: "status") as? String,
-              let filesArray = coder.decodeObject(ofClasses: [NSArray.self, File.self], forKey: "files") as? [File] else {
-            return nil
+    // MARK: - Decodable
+        public required init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = try container.decode(UUID.self, forKey: .id)
+            name = try container.decode(String.self, forKey: .name)
+            status = try container.decode(String.self, forKey: .status)
+            files = try container.decode([File].self, forKey: .files) // Certifique-se de que 'File' também é 'Decodable'
         }
-        self.id = uuid
-        self.name = name
-        self.status = status
-        self.files = filesArray
-    }
+        
+        enum CodingKeys: String, CodingKey {
+            case id, name, status, files
+        }
 }

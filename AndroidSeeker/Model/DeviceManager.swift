@@ -49,23 +49,28 @@ class DeviceManager: ObservableObject {
             return
         }
         
-        DispatchQueue.main.async {
-            
-            service.runADBDevices { data in
-                print("Conteúdo recebido do serviço:", data)
-                do {
-                    if let decodedDevicesArray = try NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: Device.self, from: data) {
-                        // Agora `decodedDevicesArray` é o array original de dispositivos
-                        print("\nDecoded Devices\(decodedDevicesArray)")
-                        self.devices = decodedDevicesArray
-                    }
-                } catch {
-                    print("Erro ao desserializar os dados: \(error)")
+        
+        service.runADBDevices { data in
+            print("Conteúdo recebido do serviço:", data)
+            do {
+                let decoder = PropertyListDecoder()
+                let decodedDevicesArray = try decoder.decode([Device].self, from: data)
+                // Agora `decodedDevicesArray` é o array original de dispositivos
+                print("\nDecoded Devices\(decodedDevicesArray)")
+                DispatchQueue.main.async {
+                    self.devices = decodedDevicesArray
+                    self.isLoading = false
                 }
                 
-                self.isLoading = false
-                print("Array de devices do app: \(self.devices)")
+            } catch {
+                print("Erro ao desserializar os dados: \(error)")
+                DispatchQueue.main.async {
+                    self.devices = []
+                    self.isLoading = false
+                }
             }
+            
+            print("Array de devices do app: \(self.devices)")
         }
     }
     

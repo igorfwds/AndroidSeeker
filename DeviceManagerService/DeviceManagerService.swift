@@ -62,7 +62,8 @@ import Foundation
                     }
                     
                     do {
-                        let data = try NSKeyedArchiver.archivedData(withRootObject: devicesArray, requiringSecureCoding: true)
+                        let encoder = PropertyListEncoder()
+                        let data = try encoder.encode(devicesArray)
                         reply(data) // Você pode devolver `devicesArray` diretamente ou, se necessário, enviar a `data`
                     } catch {
                         print("Erro ao serializar dispositivos:", error)
