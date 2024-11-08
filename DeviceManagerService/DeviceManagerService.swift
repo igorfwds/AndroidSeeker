@@ -12,10 +12,10 @@ import Foundation
     
     @Published var devices : [Device] = []
     
-    func runADBDevices(with reply: @escaping ([Device]) -> Void) {
+    func runADBDevices(with reply: @escaping (Data) -> Void) {
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
             print("ADB binary not found")
-            reply([])
+            reply(Data())
             return
         }
         
@@ -40,10 +40,11 @@ import Foundation
                 print("Saída do comando adb devices:", output)
                 
                 DispatchQueue.main.async {
+                    var devicesArray: [Device] = []
+                    
                     if !output.isEmpty {
                         let lines = output.components(separatedBy: "\n").filter { !$0.isEmpty }
                         let deviceLines = lines.dropFirst() // Ignora o cabeçalho da lista
-                        var devicesArray: [Device] = []
                         
                         for line in deviceLines {
                             let components = line.components(separatedBy: "\t")
@@ -55,21 +56,22 @@ import Foundation
                             }
                         }
                         
-                        do {
-                            let data = try NSKeyedArchiver.archivedData(withRootObject: devicesArray, requiringSecureCoding: true)
-                            reply(data) // Você pode devolver `devicesArray` diretamente ou, se necessário, enviar a `data`
-                        } catch {
-                            print("Erro ao serializar dispositivos:", error)
-                            reply([]) // Retorna um array vazio se houver erro
-                        }
                     } else {
                         print("Comando adb devices não retornou saída.")
-                        reply([]) // Retorna JSON vazio se não houver saída
+                        reply(Data()) // Retorna JSON vazio se não houver saída
+                    }
+                    
+                    do {
+                        let data = try NSKeyedArchiver.archivedData(withRootObject: devicesArray, requiringSecureCoding: true)
+                        reply(data) // Você pode devolver `devicesArray` diretamente ou, se necessário, enviar a `data`
+                    } catch {
+                        print("Erro ao serializar dispositivos:", error)
+                        reply(Data()) // Retorna um array vazio se houver erro
                     }
                 }
             } catch {
                 print("Erro ao tentar executar `adb`: \(error)")
-                reply([]) // Retorna JSON vazio em caso de erro de execução
+                reply(Data()) // Retorna JSON vazio em caso de erro de execução
             }
         }
     }

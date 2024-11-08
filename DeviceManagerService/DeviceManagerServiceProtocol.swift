@@ -13,7 +13,7 @@ import Foundation
     /// Replace the API of this protocol with an API appropriate to the service you are vending.
 //    func runADBDevicesCount(with reply: @escaping (Int) -> Void)
     
-    func runADBDevices(with reply: @escaping ([Device]) -> Void) 
+    func runADBDevices(with reply: @escaping (Data) -> Void) 
     func ping(with reply: @escaping (String) -> Void)
     func runLsCommand(deviceName: String, with reply: @escaping (String) -> Void)
 }
