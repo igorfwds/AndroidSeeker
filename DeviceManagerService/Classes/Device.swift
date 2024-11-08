@@ -35,7 +35,7 @@ public class Device: NSObject, Identifiable, NSSecureCoding, DeviceProtocol {
               let uuid = UUID(uuidString: idString as String),
               let name = coder.decodeObject(of: NSString.self, forKey: "name") as? String,
               let status = coder.decodeObject(of: NSString.self, forKey: "status") as? String,
-              let filesArray = coder.decodeObject(of: NSArray.self, forKey: "files") as? [File] else {
+              let filesArray = coder.decodeObject(ofClasses: [NSArray.self, File.self], forKey: "files") as? [File] else {
             return nil
         }
         self.id = uuid
