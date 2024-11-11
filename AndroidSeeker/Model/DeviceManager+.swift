@@ -144,6 +144,7 @@ extension DeviceManager {
                 
                 print("Output da data device: \(output)")
                 var dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                print("\n Date string do device: \(dateString)")
                
                 //Armazenando no dicionário
                 if let fileDate = convertStringToDate(dateString) {

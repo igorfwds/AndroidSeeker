@@ -107,10 +107,6 @@ import Foundation
                 let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
                 let output = String(data: outputData, encoding: .utf8) ?? ""
                 
-                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                
-                
                 DispatchQueue.main.async {
                     var filesArray: [File] = []
                     if !output.isEmpty {
@@ -144,12 +140,148 @@ import Foundation
         }
     }
     
-    func runScreenshotDirSeeker(deviceName: String, path: String) async -> String {
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB binary not found" }
+    func runScreenshotDirSeeker(deviceName: String, with reply: @escaping (String) -> Void) {
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
+            print("ADB binary not found")
+            reply("")
+            return
+        }
+        
+        let paths: [String] = [
+            "/storage/emulated/0/DCIM/",
+            "/storage/emulated/0/Pictures/",
+            "/mnt/sdcard/DCIM/"
+        ]
+        
+        let task = Process()
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        for path in paths {
+            task.executableURL = url
+            task.arguments = ["-s", deviceName, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
+            
+            task.standardOutput = outputPipe
+            task.standardError = errorPipe
+            
+            do {
+                try task.run()
+                task.waitUntilExit()
+                
+                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                
+                if !output.isEmpty {
+                    let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                    print("O diretório Screenshots do dispositivo \(deviceName) está no PATH =>  \(returnPath)")
+                    reply(returnPath)
+                } else {
+                    print("\nDiretório não encontrado no caminho: \(path)")
+                }
+                
+                if !errorOutput.isEmpty {
+                    print("Erros do comando SEARCH:\n\(errorOutput)")
+                }
+                
+            } catch {
+                print("Erro ao rodar adb: \(error)")
+                reply("")
+            }
+        }
+    }
+    
+    func runDeviceManufacturer(deviceName: String, with reply: @escaping (String) -> Void) {
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
+            print("ADB binary not found")
+            reply("")
+            return
+        }
         
         let task = Process()
         task.executableURL = url
-        task.arguments = ["-s", deviceName, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
+        task.arguments = ["-s", deviceName, "shell", "getprop", "ro.product.manufacturer"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+        
+            if output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                reply("unknow")
+            } else {
+                reply(output.trimmingCharacters(in: .whitespacesAndNewlines))
+            }
+            
+        } catch {
+            print("Erro ao rodar adb: \(error)")
+        }
+    }
+    
+    func runDeviceModel(deviceName: String, with reply: @escaping (String) -> Void) {
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
+            print("ADB binary not found")
+            reply("")
+            return
+        }
+        
+        let task = Process()
+        task.executableURL = url
+        task.arguments = ["-s", deviceName, "shell", "getprop", "ro.product.model"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+        
+            if output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                reply("unknow")
+            } else {
+                reply(output.trimmingCharacters(in: .whitespacesAndNewlines))
+            }
+            
+        } catch {
+            print("Erro ao rodar adb: \(error)")
+        }
+    }
+    
+    func convertStringToDate(_ dateString: String) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Define o formato de entrada da string
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Garante a consistência do formato
+        print("\nData formatada => \(String(describing: dateFormatter.date(from: dateString)))") //se der problema na data foi o describing
+        print("Data recebida => \(dateString)")
+        return dateFormatter.date(from: dateString)
+    }
+    
+    func dateDirectoryDevice(deviceName: String, path: String, with reply: @escaping (Date) -> Void) {
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
+            print("ADB binary not found")
+            return
+        }
+        
+        let task = Process()
+        task.executableURL = url
+        task.arguments = ["-s", deviceName, "shell", "stat", "-c", "%y", path, "|", "cut", "-d' '", "-f1-2", "|", "cut", "-c1-19"]
         
         let outputPipe = Pipe()
         let errorPipe = Pipe()
@@ -164,24 +296,54 @@ import Foundation
             let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
             let output = String(data: outputData, encoding: .utf8) ?? ""
             
-            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-            
-            if !output.isEmpty {
-                let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
-                //                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
-                return returnPath
+            print("Output da data device: \(output)")
+            let dateDirectoryDeviceString = output.trimmingCharacters(in: .whitespacesAndNewlines)
+            print("Date directory device string: \(dateDirectoryDeviceString)")
+            guard let dateDirectoryDevice = convertStringToDate(dateDirectoryDeviceString) else {
+                print("Erro ao converter data device")
+                return
             }
-            
-            if !errorOutput.isEmpty {
-                print("Erros do comando SEARCH:\n\(errorOutput)")
-            }
+            reply(dateDirectoryDevice)
             
         } catch {
             print("Erro ao rodar adb: \(error)")
         }
-        return ""
     }
     
+    func getFilesFromDevice(deviceName: String, devicePath: String, with reply: @escaping ([File]) -> Void) {
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
+            print("ADB binary not found")
+            reply([])
+            return
+        }
+        
+        let task = Process()
+        task.executableURL = url
+        task.arguments = ["-s", deviceName, "shell", "ls", devicePath]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let fileNames = output.split(separator: "\n").map(String.init)
+            let filesArray = fileNames.map { File(fileName: $0, parentFile: "/", subFiles: []) }
+            
+            
+            print("\nFilesArray: \(filesArray)")
+            reply(filesArray)
+        } catch {
+            print("Erro ao obter arquivos do dispositivo: \(error.localizedDescription)")
+            reply([])
+        }
+    }
     
 }

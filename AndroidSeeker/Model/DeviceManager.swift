@@ -121,43 +121,43 @@ class DeviceManager: ObservableObject {
     
     
     // Procurar Screenshot device
-//    func runScreenshotDirSeeker(device: Device, path: String) async -> String {
-//        let task = Process()
-//        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB não encontrado" }
-//        task.executableURL = url
-//        task.arguments = ["-s", device.name, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
-//        
-//        let outputPipe = Pipe()
-//        let errorPipe = Pipe()
-//        
-//        task.standardOutput = outputPipe
-//        task.standardError = errorPipe
-//        
-//        do {
-//            try task.run()
-//            task.waitUntilExit()
-//            
-//            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-//            let output = String(data: outputData, encoding: .utf8) ?? ""
-//            
-//            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-//            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-//            
-//            if !output.isEmpty {
-//                let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
-//                //                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
-//                return returnPath
-//            }
-//            
-//            if !errorOutput.isEmpty {
-//                print("Erros do comando SEARCH:\n\(errorOutput)")
-//            }
-//            
-//        } catch {
-//            print("Erro ao rodar adb: \(error)")
-//        }
-//        return ""
-//    }
+    func runScreenshotDirSeeker(device: Device, path: String) async -> String {
+        let task = Process()
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB não encontrado" }
+        task.executableURL = url
+        task.arguments = ["-s", device.name, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            
+            if !output.isEmpty {
+                let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                //                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
+                return returnPath
+            }
+            
+            if !errorOutput.isEmpty {
+                print("Erros do comando SEARCH:\n\(errorOutput)")
+            }
+            
+        } catch {
+            print("Erro ao rodar adb: \(error)")
+        }
+        return ""
+    }
     
     // Pull do screenshot
     func copyScreenshotDir(device: Device, isToggled: Bool) async {
@@ -187,7 +187,7 @@ class DeviceManager: ObservableObject {
                 
                 let deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
                 guard let deviceDate = convertStringToDate(deviceModifiedAT) else { return print("Erro ao converter data device") }
-                guard let macbookDate = getDesktopDirectoryDate(of: desktopPath) else { return print("Could not retrieve last modified date.")}
+                guard let macbookDate = getDesktopDirectoryDate(of: desktopPath) else { return print("Não foi possível obter a última data de modificação.")}
                 print("Data da última modificação: \(macbookDate)")
                 
                 //MARK: - Comparando datas
@@ -222,38 +222,6 @@ class DeviceManager: ObservableObject {
                     removeFilesFromDesktop(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, desktopPath: desktopPath)
                     
                     modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
-                    
-                    //                    task.arguments = ["-s", device.name, "pull", screenshotDir, desktopPath]
-                    //
-                    //                    let outputPipe = Pipe()
-                    //                    let errorPipe = Pipe()
-                    //
-                    //                    task.standardOutput = outputPipe
-                    //                    task.standardError = errorPipe
-                    //
-                    //                    do {
-                    //                        try task.run()
-                    //                        task.waitUntilExit()
-                    //
-                    //                        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                    //                        let output = String(data: outputData, encoding: .utf8) ?? ""
-                    //
-                    //                        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                    //                        let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                    //                        DispatchQueue.main.async {
-                    //                            if !output.isEmpty {
-                    //                                print("Copiando o diretório Screenshots do dispositivo \(device.name) para a mesa... ")
-                    //
-                    //                            }
-                    //
-                    //                            if !errorOutput.isEmpty {
-                    //                                print("Erros do comando PULL:\n\(errorOutput)")
-                    //                            }
-                    //                        }
-                    //
-                    //                    } catch {
-                    //                        print("Erro ao rodar adb: \(error)")
-                    //                    }
                 }
             } else {
                 print("\nDiretório não encontrado no caminho: \(path)")
@@ -427,7 +395,6 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    //MARK: - tentativa
     func convertStringToDate(_ dateString: String) -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Define o formato de entrada da string

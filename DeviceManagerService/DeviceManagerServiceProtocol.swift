@@ -7,34 +7,27 @@
 
 import Foundation
 
-/// The protocol that this service will vend as its API. This protocol will also need to be visible to the process hosting the service.
 @objc protocol DeviceManagerServiceProtocol {
     
-    /// Replace the API of this protocol with an API appropriate to the service you are vending.
 //    func runADBDevicesCount(with reply: @escaping (Int) -> Void)
     
     func runADBDevices(with reply: @escaping (Data) -> Void) 
+    
     func ping(with reply: @escaping (String) -> Void)
+    
     func runLsCommand(deviceName: String, deviceId: UUID, with reply: @escaping (Data) -> Void)
-    func runScreenshotDirSeeker(deviceName: String, path: String) async -> String
+    
+    func runScreenshotDirSeeker(deviceName: String, with reply: @escaping (String) -> Void)
+    
+    func runDeviceManufacturer(deviceName: String, with reply: @escaping (String) -> Void)
+    
+    func runDeviceModel(deviceName: String, with reply: @escaping (String) -> Void)
+    
+    func dateDirectoryDevice(deviceName: String, path: String, with reply: @escaping (Date) -> Void)
+    
+    func getFilesFromDevice(deviceName: String, devicePath: String, with reply: @escaping ([File]) -> Void)
+    
+    func convertStringToDate(_ dateString: String) -> Date?
 }
 
-/*
- To use the service from an application or other process, use NSXPCConnection to establish a connection to the service by doing something like this:
 
-     connectionToService = NSXPCConnection(serviceName: "igor.cesar.learning.DeviceManagerService")
-     connectionToService.remoteObjectInterface = NSXPCInterface(with: DeviceManagerServiceProtocol.self)
-     connectionToService.resume()
-
- Once you have a connection to the service, you can use it like this:
-
-     if let proxy = connectionToService.remoteObjectProxy as? DeviceManagerServiceProtocol {
-         proxy.performCalculation(firstNumber: 23, secondNumber: 19) { result in
-             NSLog("Result of calculation is: \(result)")
-         }
-     }
-
- And, when you are finished with the service, clean up the connection like this:
-
-     connectionToService.invalidate()
-*/
