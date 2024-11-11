@@ -135,12 +135,16 @@ import Foundation
         reply("Service is connected")
     }
     
-    func runLsCommand(deviceName: String, with reply: @escaping (String) -> Void) {
+    func runLsCommand(deviceName: String, deviceId: UUID, with reply: @escaping (Data) -> Void) {
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
+            print("ADB binary not found")
+            reply(Data())
+            return
+        }
+        
         let task = Process()
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
         task.executableURL = url
         task.arguments = ["-s", deviceName, "shell", "ls"]
-        print("DeviceName do runLs: \(deviceName)")
         
         let outputPipe = Pipe()
         let errorPipe = Pipe()
@@ -161,40 +165,34 @@ import Foundation
                 
                 
                 DispatchQueue.main.async {
+                    var filesArray: [File] = []
                     if !output.isEmpty {
                         let directories = output.split(separator: "\n").map(String.init)
-                        var filesArray: [[String: Any]] = []
                         print("Directories: \(directories)")
                         
-                        for dir in directories {
-                            let fileDict: [String: Any] = [
-                                "id": UUID().uuidString,
-                                "fileName": dir,
-                                "parentFile": "/",
-                                "subFiles": []
-                            ]
-                            filesArray.append(fileDict)
+                        let files = directories.map { dir in
+                            File(fileName: dir, parentFile: "/", subFiles: [])
                         }
-                        do {
-                            let jsonData = try JSONSerialization.data(withJSONObject: filesArray, options: [])
-                            if let jsonString = String(data: jsonData, encoding: .utf8) {
-                                print("JSON do files retornado ao cliente:", jsonString)
-                                reply(jsonString)
-                            } else {
-                                reply("[]")
-                            }
-                        } catch {
-                            print("Erro na serialização do JSON do files:", error)
-                            reply("[]")
+                        
+                        if let index = self.devices.firstIndex(where: { $0.id == deviceId }) {
+                            filesArray = files
+                            self.devices[index].files = files
                         }
                     } else {
                         print("Comando do runLsCommand não retornou saída.")
-                        reply("[]")
+                        reply(Data())
+                    }
+                    do {
+                        let encoder = PropertyListEncoder()
+                        let data = try encoder.encode(filesArray)
+                        reply(data)
+                    } catch {
+                        
                     }
                 }
             } catch {
                 print("Error ao tentar executar o ls no device: \(error)")
-                reply("[]")
+                reply(Data())
             }
         }
     }

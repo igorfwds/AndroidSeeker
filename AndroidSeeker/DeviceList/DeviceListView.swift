@@ -26,7 +26,7 @@ struct DeviceListView: View {
                                 deviceManager.isLoading = true
                                 Task{
                                     await deviceManager.copyScreenshotDir(device: dev, isToggled: isToggled)
-                                    await deviceManager.runLsCommand(device: dev)
+                                    await deviceManager.runLsCommand(deviceName: dev.name, deviceId: dev.id)
                                 }
                                 
                             }) {
