@@ -76,59 +76,6 @@ import Foundation
             }
         }
     }
-    //    @objc func runADBDevicesCount(with reply: @escaping (Int) -> Void) {
-    //        guard let url = Bundle(for: type(of: self)).url(forResource: "adb", withExtension: nil) else {
-    //            reply(999) // Código de erro se não encontrar o ADB
-    //            return
-    //        }
-    //
-    //        let task = Process()
-    //        task.executableURL = url
-    //        task.arguments = ["devices"]
-    //
-    //        let outputPipe = Pipe()
-    //        let errorPipe = Pipe()
-    //
-    //        task.standardOutput = outputPipe
-    //        task.standardError = errorPipe
-    //
-    //        do {
-    //            try task.run()
-    //            task.waitUntilExit()
-    //
-    //            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-    //            let output = String(data: outputData, encoding: .utf8) ?? ""
-    //
-    //            print("Output: \(output)")
-    //
-    //            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-    //            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-    //
-    //            DispatchQueue.main.async {
-    //                if !output.isEmpty {
-    //                    let lines = output.split(separator: "\n").map(String.init)
-    //                    print("Lines => \(lines)")
-    //                    // Ignora a primeira linha e conta as linhas restantes
-    //                    let deviceCount = lines.dropFirst().count
-    //                    print("DeviceCount => \(deviceCount)")
-    //                    print("Lines => \(lines)")
-    //                    print("Lines => \(lines.count)")
-    //                    reply(deviceCount) // Chama o callback com a contagem
-    //
-    //                } else {
-    //                    reply(101) // Retorna 0 se não houver saída
-    //                }
-    //            }
-    //
-    //            if !errorOutput.isEmpty {
-    //                print("Erros do comando:\n\(errorOutput)")
-    //            }
-    //
-    //        } catch {
-    //            print("Erro ao rodar adb: \(error)")
-    //            reply(0)
-    //        }
-    //    }
     
     func ping(with reply: @escaping (String) -> Void) {
         print("Service: Received ping request")
@@ -196,4 +143,45 @@ import Foundation
             }
         }
     }
+    
+    func runScreenshotDirSeeker(deviceName: String, path: String) async -> String {
+        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB binary not found" }
+        
+        let task = Process()
+        task.executableURL = url
+        task.arguments = ["-s", deviceName, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
+        
+        let outputPipe = Pipe()
+        let errorPipe = Pipe()
+        
+        task.standardOutput = outputPipe
+        task.standardError = errorPipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            
+            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+            
+            if !output.isEmpty {
+                let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                //                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
+                return returnPath
+            }
+            
+            if !errorOutput.isEmpty {
+                print("Erros do comando SEARCH:\n\(errorOutput)")
+            }
+            
+        } catch {
+            print("Erro ao rodar adb: \(error)")
+        }
+        return ""
+    }
+    
+    
 }
