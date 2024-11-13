@@ -159,7 +159,7 @@ class DeviceManager: ObservableObject {
             print("Diretório encontrado: \(screenshotDir)")
             createDirectory(at: desktopPath)
             
-            let deviceDate = await dateDirectoryDevice(deviceName: device.name, path: screenshotDir)
+            let deviceDate = await getDeviceDirectoryDateApp(deviceName: device.name, path: screenshotDir)
             guard let macbookDate = getDesktopDirectoryDate(of: desktopPath) else { return print("Não foi possível obter a última data de modificação.")}
             print("Data da última modificação: \(macbookDate)")
             
@@ -172,7 +172,7 @@ class DeviceManager: ObservableObject {
             let desktopDirectoryFiles = getFilesFromDesktop(desktopPath: desktopPath)
             print("\nArquivos no desktop: \(desktopDirectoryFiles)")
             
-            let deviceDirectoryFiles = await getFilesFromDevice(device: device, devicePath: screenshotDir)
+            let deviceDirectoryFiles = await getFilesFromDeviceApp(deviceName: device.name, devicePath: screenshotDir)
             print("\nArquivos no device: \(deviceDirectoryFiles)")
             
             let deviceFilesDate = getDeviceFileDate(device: device, deviceDirectoryFiles: deviceDirectoryFiles, path: screenshotDir)
@@ -251,7 +251,7 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    func dateDirectoryDeviceApp(deviceName: String, path: String) async -> Date {
+    func getDeviceDirectoryDateApp(deviceName: String, path: String) async -> Date {
         guard let service = await XPCservice() else {
             print("Erro: Conexão com o serviço XPC não foi estabelecida")
             return(Date())
@@ -259,36 +259,12 @@ class DeviceManager: ObservableObject {
         
         return await withCheckedContinuation { continuation in
             DispatchQueue.main.async {
-                service.dateDirectoryDevice(deviceName: deviceName, path: path) { date in
+                service.getDeviceDirectoryDate(deviceName: deviceName, path: path) { date in
                     continuation.resume(returning: date)
                 }
             }
         }
     }
-    
-    //    func dateDirectoryMacbook(desktopPath: String) async -> String {
-    //        let task = Process()
-    //        let url = "/bin/zsh"
-    //        task.executableURL = URL(fileURLWithPath: url)
-    //        task.arguments = ["-c", "stat -f \"%Sm\" -t \"%Y-%m-%d %H:%M:%S\" \"\(desktopPath)\""]
-    //        let outputPipe = Pipe()
-    //        let errorPipe = Pipe()
-    //        task.standardOutput = outputPipe
-    //        task.standardError = errorPipe
-    //        do {
-    //            try task.run()
-    //            task.waitUntilExit()
-    //            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-    //            let output = String(data: outputData, encoding: .utf8) ?? ""
-    //            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-    //            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-    //            print("Output da data do desktop: \(output)")
-    //            return output.trimmingCharacters(in: .whitespacesAndNewlines)
-    //        } catch {
-    //            print("Erro ao rodar adb: \(error)")
-    //        }
-    //        return ""
-    //    }
     
     func getDesktopDirectoryDate(of filePath: String) -> Date? {
         let fileManager = FileManager.default
@@ -328,10 +304,10 @@ class DeviceManager: ObservableObject {
         
         if deviceDate > macbookDate {
             isDirectoryUpdated = false
-            print("O diretório do dispositivo foi modificado mais recentemente.")
+            print("O diretório do dispositivo foi modificado recentemente.")
         } else {
             isDirectoryUpdated = true
-            print("O diretório no MacBook foi modificado mais recentemente ou é igual.")
+            print("O diretório no MacBook foi modificado recentemente ou é igual.")
         }
         return isDirectoryUpdated
         

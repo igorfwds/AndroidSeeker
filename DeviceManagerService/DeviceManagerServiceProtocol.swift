@@ -23,9 +23,9 @@ import Foundation
     
     func runDeviceModel(deviceName: String, with reply: @escaping (String) -> Void)
     
-    func dateDirectoryDevice(deviceName: String, path: String, with reply: @escaping (Date) -> Void)
+    func getDeviceDirectoryDate(deviceName: String, path: String, with reply: @escaping (Date) -> Void)
     
-    func getFilesFromDevice(deviceName: String, devicePath: String, with reply: @escaping ([File]) -> Void)
+    func getFilesFromDevice(deviceName: String, devicePath: String, with reply: @escaping (Data) -> Void)
     
     func convertStringToDate(_ dateString: String) -> Date?
 }

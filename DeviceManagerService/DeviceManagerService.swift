@@ -66,12 +66,12 @@ import Foundation
                         reply(data)
                     } catch {
                         print("Erro ao serializar dispositivos:", error)
-                        reply(Data()) // Retorna um array vazio se houver erro
+                        reply(Data())
                     }
                 }
             } catch {
                 print("Erro ao tentar executar `adb`: \(error)")
-                reply(Data()) // Retorna JSON vazio em caso de erro de execução
+                reply(Data())
             }
         }
     }
@@ -128,7 +128,8 @@ import Foundation
                         let data = try NSKeyedArchiver.archivedData(withRootObject: filesArray, requiringSecureCoding: true)
                         reply(data)
                     } catch {
-                        
+                        print("Erro ao serializar diretórios:", error)
+                        reply(Data())
                     }
                 }
             } catch {
@@ -216,7 +217,7 @@ import Foundation
             
             let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
             let output = String(data: outputData, encoding: .utf8) ?? ""
-        
+            
             if output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 reply("unknow")
             } else {
@@ -251,7 +252,7 @@ import Foundation
             
             let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
             let output = String(data: outputData, encoding: .utf8) ?? ""
-        
+            
             if output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 reply("unknow")
             } else {
@@ -272,7 +273,7 @@ import Foundation
         return dateFormatter.date(from: dateString)
     }
     
-    func dateDirectoryDevice(deviceName: String, path: String, with reply: @escaping (Date) -> Void) {
+    func getDeviceDirectoryDate(deviceName: String, path: String, with reply: @escaping (Date) -> Void) {
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
             print("ADB binary not found")
             return
@@ -309,10 +310,10 @@ import Foundation
         }
     }
     
-    func getFilesFromDevice(deviceName: String, devicePath: String, with reply: @escaping ([File]) -> Void) {
+    func getFilesFromDevice(deviceName: String, devicePath: String, with reply: @escaping (Data) -> Void) {
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
             print("ADB binary not found")
-            reply([])
+            reply(Data())
             return
         }
         
@@ -336,12 +337,18 @@ import Foundation
             let fileNames = output.split(separator: "\n").map(String.init)
             let filesArray = fileNames.map { File(fileName: $0, parentFile: "/", subFiles: []) }
             
-            
             print("\nFilesArray: \(filesArray)")
-            reply(filesArray)
+            
+            do {
+                let data = try NSKeyedArchiver.archivedData(withRootObject: filesArray, requiringSecureCoding: true)
+                reply(data)
+            } catch {
+                print("Erro ao serializar dispositivos:", error)
+                reply(Data()) // Retorna um array vazio se houver erro
+            }
         } catch {
             print("Erro ao obter arquivos do dispositivo: \(error.localizedDescription)")
-            reply([])
+            reply(Data())
         }
     }
     
@@ -350,7 +357,7 @@ import Foundation
         let deviceFileNames = Set(deviceDirectoryFiles.map { $0.fileName })
         
         var deviceFilesDate: [String: Date] = [:]
-    
+        
         for file in deviceFileNames {
             
             // Pegando a data de cada arquivo
@@ -380,7 +387,7 @@ import Foundation
                 print("Output da data device: \(output)")
                 var dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
                 print("\n Date string do device: \(dateString)")
-               
+                
                 //Armazenando no dicionário
                 if let fileDate = convertStringToDate(dateString) {
                     deviceFilesDate[file] = fileDate

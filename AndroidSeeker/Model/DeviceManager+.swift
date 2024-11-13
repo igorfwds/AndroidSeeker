@@ -30,30 +30,27 @@ extension DeviceManager {
     }
     
     //MARK: - Pergar arquivos do Device
-    func getFilesFromDevice(device: Device, devicePath: String) async -> [File] {
-        let task = Process()
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return [] }
-        task.executableURL = url
-        task.arguments = ["-s", device.name, "shell", "ls", devicePath] // Altere para o caminho desejado
+    func getFilesFromDeviceApp(deviceName: String, devicePath: String) async -> [File] {
+        guard let service = await XPCservice() else {
+            print("Erro: Conexão com o serviço XPC não foi estabelecida")
+            return([])
+        }
         
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-        
-        task.standardOutput = outputPipe
-        task.standardError = errorPipe
-        
-        do {
-            try task.run()
-            task.waitUntilExit()
+        return await withCheckedContinuation { continuation in
+            service.getFilesFromDevice(deviceName: deviceName, devicePath: devicePath) { data in
+                do {
+                    guard let filesArray = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, File.self, NSUUID.self, NSString.self], from: data) as? [File] else {
+                        print("Erro ao desserializar")
+                        continuation.resume(returning: [])
+                        return
+                    }
+                    continuation.resume(returning: filesArray)
+                } catch {
+                    print("Erro ao desserializar os dados: \(error)")
+                    continuation.resume(returning: [])
+                }
+            }
             
-            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: outputData, encoding: .utf8) ?? ""
-            
-            let fileNames = output.split(separator: "\n").map(String.init)
-            return fileNames.map { File(fileName: $0, parentFile: "/", subFiles: []) } // Adaptar conforme necessário
-        } catch {
-            print("Erro ao obter arquivos do dispositivo: \(error.localizedDescription)")
-            return []
         }
     }
     
@@ -96,7 +93,7 @@ extension DeviceManager {
         let filesToRemoveFromDesktop = desktopFileNames.subtracting(deviceFileNames)
         
         let fileManager = FileManager.default
-
+        
         for file in filesToRemoveFromDesktop {
             var desktopFilePath = "\(desktopPath)/\(file)"
             
@@ -115,7 +112,7 @@ extension DeviceManager {
         let deviceFileNames = Set(deviceDirectoryFiles.map { $0.fileName })
         
         var deviceFilesDate: [String: Date] = [:]
-    
+        
         for file in deviceFileNames {
             
             // Pegando a data de cada arquivo
@@ -145,7 +142,7 @@ extension DeviceManager {
                 print("Output da data device: \(output)")
                 var dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
                 print("\n Date string do device: \(dateString)")
-               
+                
                 //Armazenando no dicionário
                 if let fileDate = convertStringToDate(dateString) {
                     deviceFilesDate[file] = fileDate
@@ -182,7 +179,7 @@ extension DeviceManager {
                     desktopFilesDate[file] = modifiedDate
                 } else {
                     print("Data de modificação não encontrada.")
-
+                    
                 }
                 
             } catch {
@@ -220,23 +217,6 @@ extension DeviceManager {
 }
 
 
-//    func compareFiles() -> [String: [String] ] {
-//
-//        var dict: [String: [String] ] = [
-//            "Substituir": [],// arquivos que foram alterados no device e existem no mac
-//            "Importar": [],// arquivos que apenas existem no device
-//            "Deletar": [] // arquivos que existem no mac mas nao no device
-//        ]
-//
-//
-//        dict["Substituir"]?.append("lyvia.jpg")
-//        dict["Substituir"]?.append("igor.jpg")
-//
-//        for (key, value) in dict where key == "Substituir" {
-//            print( value)
-//        }
-//        return dict
-//    }
 
 
 
