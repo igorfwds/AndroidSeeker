@@ -124,51 +124,23 @@ class DeviceManager: ObservableObject {
     
     
     // Procurar Screenshot device
-    func runScreenshotDirSeeker(device: Device, path: String) async -> String {
-        let task = Process()
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return "ADB não encontrado" }
-        task.executableURL = url
-        task.arguments = ["-s", device.name, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
-        
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-        
-        task.standardOutput = outputPipe
-        task.standardError = errorPipe
-        
-        do {
-            try task.run()
-            task.waitUntilExit()
-            
-            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: outputData, encoding: .utf8) ?? ""
-            
-            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-            
-            if !output.isEmpty {
-                let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
-                //                print("O diretório Screenshots do dispositivo \(device.name) está no PATH =>  \(returnPath)")
-                return returnPath
-            }
-            
-            if !errorOutput.isEmpty {
-                print("Erros do comando SEARCH:\n\(errorOutput)")
-            }
-            
-        } catch {
-            print("Erro ao rodar adb: \(error)")
+    func runScreenshotDirSeekerApp(deviceName: String) async -> String {
+        guard let service = await XPCservice() else {
+            print("Erro: Conexão com o serviço XPC não foi estabelecida")
+            return ""
         }
-        return ""
+        
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                service.runScreenshotDirSeeker(deviceName: deviceName) { path in
+                    continuation.resume(returning: path)
+                }
+            }
+        }
     }
     
     // Pull do screenshot
     func copyScreenshotDir(device: Device, isToggled: Bool) async {
-        let paths: [String] = [
-            "/storage/emulated/0/DCIM/",
-            "/storage/emulated/0/Pictures/",
-            "/mnt/sdcard/DCIM/"
-        ]
         
         let deviceManufacturer = await runDeviceManufacturer(device: device)
         let deviceModel = await runDeviceModel(device: device)
@@ -178,59 +150,58 @@ class DeviceManager: ObservableObject {
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return }
         
         var screenshotDir: String = ""
-        for path in paths {
+        
+        screenshotDir =  await runScreenshotDirSeekerApp(deviceName: device.name)
+        
+        // Verifica se o diretório de screenshots foi encontrado
+        if !screenshotDir.isEmpty {
             
-            screenshotDir =  await runScreenshotDirSeeker(device: device, path: path)
+            print("Diretório encontrado: \(screenshotDir)")
+            createDirectory(at: desktopPath)
             
-            // Verifica se o diretório de screenshots foi encontrado
-            if !screenshotDir.isEmpty {
-                
-                print("Diretório encontrado: \(screenshotDir)")
-                createDirectory(at: desktopPath)
-                
-                let deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
-                guard let deviceDate = convertStringToDate(deviceModifiedAT) else { return print("Erro ao converter data device") }
-                guard let macbookDate = getDesktopDirectoryDate(of: desktopPath) else { return print("Não foi possível obter a última data de modificação.")}
-                print("Data da última modificação: \(macbookDate)")
-                
-                //MARK: - Comparando datas
-                let isDirectoryUpdated = compareDates(deviceDate: deviceDate, macbookDate: macbookDate)
-                if isDirectoryUpdated {
-                    print("Não houve alteração no diretório desde a última sincronização.")
-                }
-                
-                let desktopDirectoryFiles = getFilesFromDesktop(desktopPath: desktopPath)
-                print("\nArquivos no desktop: \(desktopDirectoryFiles)")
-                
-                let deviceDirectoryFiles = await getFilesFromDevice(device: device, devicePath: screenshotDir)
-                print("\nArquivos no device: \(deviceDirectoryFiles)")
-                
-                let deviceFilesDate = getDeviceFileDate(device: device, deviceDirectoryFiles: deviceDirectoryFiles, path: screenshotDir)
-                let desktopFilesDate = getDesktopFileDate(desktopPath: desktopPath, desktopDirectoryFiles: desktopDirectoryFiles)
-                
-                
-                let task = Process()
-                task.executableURL = url
-                
-                if isToggled {
-                    // Manter arquivos excluídos no desktop e adicionar os novos arquivos
-                    addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
-                    
-                    modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
-                    
-                } else {
-                    // Sincronizar e não manter arquivos excluídos no desktop
-                    addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
-                    
-                    removeFilesFromDesktop(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, desktopPath: desktopPath)
-                    
-                    modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
-                }
-            } else {
-                print("\nDiretório não encontrado no caminho: \(path)")
+            let deviceModifiedAT = await dateDirectoryDevice(device: device, path: screenshotDir)
+            guard let deviceDate = convertStringToDate(deviceModifiedAT) else { return print("Erro ao converter data device") }
+            guard let macbookDate = getDesktopDirectoryDate(of: desktopPath) else { return print("Não foi possível obter a última data de modificação.")}
+            print("Data da última modificação: \(macbookDate)")
+            
+            //MARK: - Comparando datas
+            let isDirectoryUpdated = compareDates(deviceDate: deviceDate, macbookDate: macbookDate)
+            if isDirectoryUpdated {
+                print("Não houve alteração no diretório desde a última sincronização.")
             }
+            
+            let desktopDirectoryFiles = getFilesFromDesktop(desktopPath: desktopPath)
+            print("\nArquivos no desktop: \(desktopDirectoryFiles)")
+            
+            let deviceDirectoryFiles = await getFilesFromDevice(device: device, devicePath: screenshotDir)
+            print("\nArquivos no device: \(deviceDirectoryFiles)")
+            
+            let deviceFilesDate = getDeviceFileDate(device: device, deviceDirectoryFiles: deviceDirectoryFiles, path: screenshotDir)
+            let desktopFilesDate = getDesktopFileDate(desktopPath: desktopPath, desktopDirectoryFiles: desktopDirectoryFiles)
+            
+            
+            let task = Process()
+            task.executableURL = url
+            
+            if isToggled {
+                // Manter arquivos excluídos no desktop e adicionar os novos arquivos
+                addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
+                
+                modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
+                
+            } else {
+                // Sincronizar e não manter arquivos excluídos no desktop
+                addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
+                
+                removeFilesFromDesktop(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, desktopPath: desktopPath)
+                
+                modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
+            }
+        } else {
+            print("\nDiretório não encontrado no caminho: \(screenshotDir)")
         }
     }
+    
     
     // Cria o diretório no mac
     func createDirectory(at path: String) {

@@ -151,12 +151,12 @@ import Foundation
             "/mnt/sdcard/DCIM/"
         ]
         
-        let task = Process()
-        
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-        
         for path in paths {
+            let task = Process()
+            
+            let outputPipe = Pipe()
+            let errorPipe = Pipe()
+            
             task.executableURL = url
             task.arguments = ["-s", deviceName, "shell", "find", path, "-type", "d", "-name", "*Screenshot*"]
             
@@ -177,6 +177,7 @@ import Foundation
                     let returnPath = output.trimmingCharacters(in: .whitespacesAndNewlines)
                     print("O diretório Screenshots do dispositivo \(deviceName) está no PATH =>  \(returnPath)")
                     reply(returnPath)
+                    return
                 } else {
                     print("\nDiretório não encontrado no caminho: \(path)")
                 }
@@ -344,6 +345,58 @@ import Foundation
         }
     }
     
-//    func getDeviceFileDate()
+    func getDeviceFileDate(deviceName: String, deviceDirectoryFiles: [File], path: String) async -> [String:Date] {
+        
+        let deviceFileNames = Set(deviceDirectoryFiles.map { $0.fileName })
+        
+        var deviceFilesDate: [String: Date] = [:]
+    
+        for file in deviceFileNames {
+            
+            // Pegando a data de cada arquivo
+            let filePath = "\(path)/\(file)"
+            
+            let task = Process()
+            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return [:] }
+            task.executableURL = url
+            task.arguments = ["-s", deviceName, "shell", "stat", "-c", "%y", "'\(filePath)'", "|", "cut", "-d' '", "-f1-2", "|", "cut", "-c1-19"]
+            
+            let outputPipe = Pipe()
+            let errorPipe = Pipe()
+            
+            task.standardOutput = outputPipe
+            task.standardError = errorPipe
+            
+            do {
+                try task.run()
+                task.waitUntilExit()
+                
+                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? ""
+                
+                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
+                
+                print("Output da data device: \(output)")
+                var dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                print("\n Date string do device: \(dateString)")
+               
+                //Armazenando no dicionário
+                if let fileDate = convertStringToDate(dateString) {
+                    deviceFilesDate[file] = fileDate
+                } else {
+                    print("Erro ao converter a data para o arquivo: \(file)")
+                }
+                
+            } catch {
+                print("Erro ao rodar adb: \(error)")
+            }
+        }
+        
+        print("Dicionário do device: \(deviceFilesDate)")
+        return deviceFilesDate
+    }
+    
+    
     
 }
