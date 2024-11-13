@@ -142,7 +142,7 @@ class DeviceManager: ObservableObject {
     // Pull do screenshot
     func copyScreenshotDir(device: Device, isToggled: Bool) async {
         
-        let deviceManufacturer = await runDeviceManufacturer(device: device)
+        let deviceManufacturer = await runDeviceManufacturerApp(deviceName: device.name)
         let deviceModel = await runDeviceModel(device: device)
         
         let desktopPath = "\(NSHomeDirectory())/Desktop/Devices/\(deviceManufacturer)-\(deviceModel)-\(device.name)/Screenshots"
@@ -221,41 +221,18 @@ class DeviceManager: ObservableObject {
     }
     
     // Fabricante do device
-    func runDeviceManufacturer(device: Device) async -> String {
-        let task = Process()
-        //        var vazio = ""
-        guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return ""}
-        task.executableURL = url
-        task.arguments = ["-s", device.name, "shell", "getprop", "ro.product.manufacturer"]
-        //        task.arguments = ["-s", device.name, "shell", "echo", vazio]
+    func runDeviceManufacturerApp(deviceName: String) async -> String {
+        guard let service = await XPCservice() else {
+            print("Erro: Conexão com o serviço XPC não foi estabelecida")
+            return ""
+        }
         
-        
-        let outputPipe = Pipe()
-        let errorPipe = Pipe()
-        
-        task.standardOutput = outputPipe
-        task.standardError = errorPipe
-        
-        do {
-            try task.run()
-            task.waitUntilExit()
-            
-            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            let output = String(data: outputData, encoding: .utf8) ?? ""
-            
-            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-            
-            //            print("Marca: \(output.trimmingCharacters(in: .whitespacesAndNewlines))")
-            
-            if output.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                return "unknow"
-            } else {
-                return output.trimmingCharacters(in: .whitespacesAndNewlines)
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                service.runDeviceManufacturer(deviceName: deviceName) { manufacturer in
+                    continuation.resume(returning: manufacturer)
+                }
             }
-            
-        } catch {
-            return "Erro ao rodar adb: \(error)"
         }
     }
     
