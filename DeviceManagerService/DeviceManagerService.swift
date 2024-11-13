@@ -62,9 +62,8 @@ import Foundation
                     }
                     
                     do {
-                        let encoder = PropertyListEncoder()
-                        let data = try encoder.encode(devicesArray)
-                        reply(data) // Você pode devolver `devicesArray` diretamente ou, se necessário, enviar a `data`
+                        let data = try NSKeyedArchiver.archivedData(withRootObject: devicesArray, requiringSecureCoding: true)
+                        reply(data)
                     } catch {
                         print("Erro ao serializar dispositivos:", error)
                         reply(Data()) // Retorna um array vazio se houver erro
@@ -126,8 +125,7 @@ import Foundation
                         reply(Data())
                     }
                     do {
-                        let encoder = PropertyListEncoder()
-                        let data = try encoder.encode(filesArray)
+                        let data = try NSKeyedArchiver.archivedData(withRootObject: filesArray, requiringSecureCoding: true)
                         reply(data)
                     } catch {
                         
@@ -345,5 +343,7 @@ import Foundation
             reply([])
         }
     }
+    
+//    func getDeviceFileDate()
     
 }

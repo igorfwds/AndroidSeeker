@@ -53,12 +53,13 @@ class DeviceManager: ObservableObject {
         service.runADBDevices { data in
             print("Conteúdo recebido do serviço:", data)
             do {
-                let decoder = PropertyListDecoder()
-                let decodedDevicesArray = try decoder.decode([Device].self, from: data)
-                // Agora `decodedDevicesArray` é o array original de dispositivos
-                print("\nDecoded Devices \(decodedDevicesArray)")
+                guard let devicesArray = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, Device.self, NSUUID.self, NSString.self], from: data) as? [Device] else {
+                    print("Erro ao desserializar")
+                    return
+                }
+                print("\nDecoded Devices \(devicesArray)")
                 DispatchQueue.main.async {
-                    self.devices = decodedDevicesArray
+                    self.devices = devicesArray
                     self.isLoading = false
                 }
                 
@@ -99,13 +100,15 @@ class DeviceManager: ObservableObject {
                 print("Conteúdo recebido do ls do serviço:", data)
                 
                 do {
-                    let decoder = PropertyListDecoder()
-                    let decodedFilesArray = try decoder.decode([File].self, from: data)
-                    print("\nDecoded Files: \(decodedFilesArray)")
+                    guard let filesArray = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, File.self, NSUUID.self, NSString.self], from: data) as? [File] else {
+                        print("Erro ao desserializar")
+                        return
+                    }
+                    print("\nDecoded Files: \(filesArray)")
                     
                     DispatchQueue.main.async {
                         if let index = self.devices.firstIndex(where: { $0.id == deviceId }) {
-                            self.devices[index].files = decodedFilesArray
+                            self.devices[index].files = filesArray
                             self.isLoading = false
                             
                         }

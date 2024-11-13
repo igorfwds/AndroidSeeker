@@ -7,32 +7,51 @@
 
 import Foundation
 
-@objc(File)
-public class File: NSObject, Identifiable, Codable, FileProtocol {
+@objc(File) public class File: NSObject, Identifiable, NSSecureCoding, NSCopying {
+    public static var supportsSecureCoding: Bool = true
     
-    public var id: UUID
-    public var fileName: String
-    public var parentFile: String
-    public var subFiles: [File]
+    @objc public var id: UUID
+    @objc public var fileName: String
+    @objc public var parentFile: String
+    @objc public var subFiles: [File]
     
-    public init(fileName: String, parentFile: String, subFiles: [File]) {
+    enum CodingKeys: String, CodingKey {
+        case idKey = "id"
+        case fileNameKey = "fileName"
+        case parentFileKey = "parentFile"
+        case subFilesKey = "subFiles"
+    }
+    
+    @objc public init(fileName: String, parentFile: String, subFiles: [File]) {
         self.id = UUID()
         self.fileName = fileName
         self.parentFile = parentFile
         self.subFiles = subFiles
     }
     
-    // MARK: - Decodable
-    public required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
-        fileName = try container.decode(String.self, forKey: .fileName)
-        parentFile = try container.decode(String.self, forKey: .parentFile)
-        subFiles = try container.decode([File].self, forKey: .subFiles)
+    // MARK: - NSSecureCoding
+    @objc public required convenience init?(coder aDecoder: NSCoder) {
+        guard let id = aDecoder.decodeObject(of: NSUUID.self, forKey: CodingKeys.idKey.rawValue) as? UUID,
+              let fileName = aDecoder.decodeObject(forKey: CodingKeys.fileNameKey.rawValue) as? String,
+              let parentFile = aDecoder.decodeObject(forKey: CodingKeys.parentFileKey.rawValue) as? String,
+              let subFiles = aDecoder.decodeObject(forKey: CodingKeys.subFilesKey.rawValue) as? [File] else {
+            return nil
+        }
+        
+        self.init(fileName: fileName, parentFile: parentFile, subFiles: subFiles)
+        self.id = id
     }
     
-    enum CodingKeys: String, CodingKey {
-        case id, fileName, parentFile, subFiles
+    @objc public func encode(with aCoder: NSCoder) {
+        aCoder.encode(id as NSUUID, forKey: CodingKeys.idKey.rawValue)
+        aCoder.encode(fileName, forKey: CodingKeys.fileNameKey.rawValue)
+        aCoder.encode(parentFile, forKey: CodingKeys.parentFileKey.rawValue)
+        aCoder.encode(subFiles, forKey: CodingKeys.subFilesKey.rawValue)
+    }
+    
+    @objc public func copy(with zone: NSZone? = nil) -> Any {
+        let copy = File(fileName: self.fileName, parentFile: self.parentFile, subFiles: self.subFiles)
+        copy.id = self.id // Preserving the UUID for the copied instance
+        return copy
     }
 }
-
