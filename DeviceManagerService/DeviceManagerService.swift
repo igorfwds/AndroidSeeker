@@ -11,6 +11,7 @@ import Foundation
 @objc class DeviceManagerService: NSObject, DeviceManagerServiceProtocol {
     
     @Published var devices : [Device] = []
+    @Published var filesArray : [File] = []
     
     func runADBDevices(with reply: @escaping (Data) -> Void) {
         guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
@@ -317,6 +318,8 @@ import Foundation
             return
         }
         
+        self.filesArray = []
+        
         let task = Process()
         task.executableURL = url
         task.arguments = ["-s", deviceName, "shell", "ls", devicePath]
@@ -335,9 +338,9 @@ import Foundation
             let output = String(data: outputData, encoding: .utf8) ?? ""
             
             let fileNames = output.split(separator: "\n").map(String.init)
-            let filesArray = fileNames.map { File(fileName: $0, parentFile: "/", subFiles: []) }
+            self.filesArray = fileNames.map { File(fileName: $0, parentFile: "/", subFiles: []) }
             
-            print("\nFilesArray: \(filesArray)")
+            print("\nFilesArray: \(self.filesArray)")
             
             do {
                 let data = try NSKeyedArchiver.archivedData(withRootObject: filesArray, requiringSecureCoding: true)
@@ -352,58 +355,60 @@ import Foundation
         }
     }
     
-    func getDeviceFileDate(deviceName: String, deviceDirectoryFiles: [File], path: String) async -> [String:Date] {
-        
-        let deviceFileNames = Set(deviceDirectoryFiles.map { $0.fileName })
+    func getDeviceFileDate(deviceName: String, deviceFileNames: Set<String>, path: String, with reply: @escaping ([String:Date]) -> Void) {
         
         var deviceFilesDate: [String: Date] = [:]
         
+        let dispatchGroup = DispatchGroup()
+        let dateQueue = DispatchQueue(label: "date.queue", attributes: .concurrent)
+        
         for file in deviceFileNames {
-            
-            // Pegando a data de cada arquivo
             let filePath = "\(path)/\(file)"
-            
             let task = Process()
-            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return [:] }
+            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else {
+                continue
+            }
+            
             task.executableURL = url
-            task.arguments = ["-s", deviceName, "shell", "stat", "-c", "%y", "'\(filePath)'", "|", "cut", "-d' '", "-f1-2", "|", "cut", "-c1-19"]
+            task.arguments = ["-s", deviceName, "shell", "stat", "-c", "%y", filePath, "|", "cut", "-d' '", "-f1-2", "|", "cut", "-c1-19"]
             
             let outputPipe = Pipe()
             let errorPipe = Pipe()
-            
             task.standardOutput = outputPipe
             task.standardError = errorPipe
             
-            do {
-                try task.run()
-                task.waitUntilExit()
-                
-                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                let output = String(data: outputData, encoding: .utf8) ?? ""
-                
-                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                
-                print("Output da data device: \(output)")
-                var dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
-                print("\n Date string do device: \(dateString)")
-                
-                //Armazenando no dicionário
-                if let fileDate = convertStringToDate(dateString) {
-                    deviceFilesDate[file] = fileDate
-                } else {
-                    print("Erro ao converter a data para o arquivo: \(file)")
+            dispatchGroup.enter()
+            
+            DispatchQueue.global().async {
+                do {
+                    try task.run()
+                    task.waitUntilExit()
+                    
+                    let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                    let output = String(data: outputData, encoding: .utf8) ?? ""
+                    let dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                    
+                    if let fileDate = self.convertStringToDate(dateString) {
+                        dateQueue.async(flags: .barrier) {
+                            deviceFilesDate[file] = fileDate
+                        }
+                    } else {
+                        print("Erro ao converter a data para o arquivo: \(file)")
+                    }
+                    
+                } catch {
+                    print("Erro ao rodar adb para o arquivo \(file): \(error)")
                 }
                 
-            } catch {
-                print("Erro ao rodar adb: \(error)")
+                dispatchGroup.leave()
             }
         }
         
-        print("Dicionário do device: \(deviceFilesDate)")
-        return deviceFilesDate
+        // Aguardar todas as tarefas terminarem
+        dispatchGroup.notify(queue: DispatchQueue.main) {
+            print("Dicionário de datas dos arquivos: \(deviceFilesDate)")
+            reply(deviceFilesDate)
+        }
     }
-    
-    
     
 }

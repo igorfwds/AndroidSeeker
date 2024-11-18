@@ -28,6 +28,8 @@ import Foundation
     func getFilesFromDevice(deviceName: String, devicePath: String, with reply: @escaping (Data) -> Void)
     
     func convertStringToDate(_ dateString: String) -> Date?
+    
+    func getDeviceFileDate(deviceName: String, deviceFileNames: Set<String>, path: String, with reply: @escaping ([String:Date]) -> Void)
 }
 
 

@@ -11,7 +11,7 @@ import Foundation
 extension DeviceManager {
     
     //MARK: - Pegar arquivos do diretório do Mac
-    func getFilesFromDesktop(desktopPath: String) -> [File] {
+    func getFilesFromDesktop(desktopPath: String) async -> [File] {
         //        let desktopPath = "\(NSHomeDirectory())/Desktop/Devices/"
         let fileManager = FileManager.default
         var files: [File] = []
@@ -55,7 +55,7 @@ extension DeviceManager {
     }
     
     //MARK: - Adicionar arquivos que não estão no desktop, mas estão no device
-    func addFilesFromDevice(deviceDirectoryFiles: [File], desktopDirectoryFiles: [File], device: Device, desktopPath: String, screenshotDir: String) {
+    func addFilesFromDevice(deviceDirectoryFiles: [File], desktopDirectoryFiles: [File], device: Device, desktopPath: String, screenshotDir: String) async {
         
         let desktopFileNames = Set(desktopDirectoryFiles.map { $0.fileName })
         print("Nome dos arquivos no desktop: \(desktopFileNames)")
@@ -82,7 +82,7 @@ extension DeviceManager {
         }
     }
     
-    func removeFilesFromDesktop(deviceDirectoryFiles: [File], desktopDirectoryFiles: [File], desktopPath: String) {
+    func removeFilesFromDesktop(deviceDirectoryFiles: [File], desktopDirectoryFiles: [File], desktopPath: String) async {
         let desktopFileNames = Set(desktopDirectoryFiles.map { $0.fileName })
         print("Nome dos arquivos no desktop: \(desktopFileNames)")
         
@@ -95,7 +95,7 @@ extension DeviceManager {
         let fileManager = FileManager.default
         
         for file in filesToRemoveFromDesktop {
-            var desktopFilePath = "\(desktopPath)/\(file)"
+            let desktopFilePath = "\(desktopPath)/\(file)"
             
             do {
                 try fileManager.removeItem(atPath: desktopFilePath)
@@ -107,59 +107,25 @@ extension DeviceManager {
         
     }
     
-    func getDeviceFileDate(device: Device, deviceDirectoryFiles: [File], path: String) -> [String:Date] {
+    func getDeviceFileDateApp(deviceName: String, deviceDirectoryFiles: [File], path: String) async -> [String:Date] {
+        guard let service = await XPCservice() else {
+            print("Erro: Conexão com o serviço XPC não foi estabelecida")
+            return([:])
+        }
         
         let deviceFileNames = Set(deviceDirectoryFiles.map { $0.fileName })
         
-        var deviceFilesDate: [String: Date] = [:]
-        
-        for file in deviceFileNames {
-            
-            // Pegando a data de cada arquivo
-            let filePath = "\(path)/\(file)"
-            
-            let task = Process()
-            guard let url = Bundle.main.url(forResource: "adb", withExtension: nil) else { return [:] }
-            task.executableURL = url
-            task.arguments = ["-s", device.name, "shell", "stat", "-c", "%y", "'\(filePath)'", "|", "cut", "-d' '", "-f1-2", "|", "cut", "-c1-19"]
-            
-            let outputPipe = Pipe()
-            let errorPipe = Pipe()
-            
-            task.standardOutput = outputPipe
-            task.standardError = errorPipe
-            
-            do {
-                try task.run()
-                task.waitUntilExit()
-                
-                let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-                let output = String(data: outputData, encoding: .utf8) ?? ""
-                
-                let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-                let errorOutput = String(data: errorData, encoding: .utf8) ?? ""
-                
-                print("Output da data device: \(output)")
-                var dateString = output.trimmingCharacters(in: .whitespacesAndNewlines)
-                print("\n Date string do device: \(dateString)")
-                
-                //Armazenando no dicionário
-                if let fileDate = convertStringToDate(dateString) {
-                    deviceFilesDate[file] = fileDate
-                } else {
-                    print("Erro ao converter a data para o arquivo: \(file)")
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                service.getDeviceFileDate(deviceName: deviceName, deviceFileNames: deviceFileNames, path: path) { deviceFilesDate in
+                    continuation.resume(returning: deviceFilesDate)
                 }
-                
-            } catch {
-                print("Erro ao rodar adb: \(error)")
             }
         }
         
-        print("Dicionário do device: \(deviceFilesDate)")
-        return deviceFilesDate
     }
     
-    func getDesktopFileDate(desktopPath: String, desktopDirectoryFiles: [File]) -> [String:Date] {
+    func getDesktopFileDate(desktopPath: String, desktopDirectoryFiles: [File]) async -> [String:Date] {
         
         let desktopFileNames = Set(desktopDirectoryFiles.map { $0.fileName })
         
@@ -191,7 +157,7 @@ extension DeviceManager {
     }
     
     
-    func modifyFilesFromDesktop(device: Device, path: String, desktopPath: String, deviceFilesDate: [String:Date], desktopFilesDate: [String:Date]) {
+    func modifyFilesFromDesktop(device: Device, path: String, desktopPath: String, deviceFilesDate: [String:Date], desktopFilesDate: [String:Date]) async {
         
         for (file, deviceDate) in deviceFilesDate {
             

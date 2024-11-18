@@ -160,7 +160,7 @@ class DeviceManager: ObservableObject {
             createDirectory(at: desktopPath)
             
             let deviceDate = await getDeviceDirectoryDateApp(deviceName: device.name, path: screenshotDir)
-            guard let macbookDate = getDesktopDirectoryDate(of: desktopPath) else { return print("Não foi possível obter a última data de modificação.")}
+            guard let macbookDate = await getDesktopDirectoryDate(of: desktopPath) else { return print("Não foi possível obter a última data de modificação.")}
             print("Data da última modificação: \(macbookDate)")
             
             //MARK: - Comparando datas
@@ -169,14 +169,14 @@ class DeviceManager: ObservableObject {
                 print("Não houve alteração no diretório desde a última sincronização.")
             }
             
-            let desktopDirectoryFiles = getFilesFromDesktop(desktopPath: desktopPath)
+            let desktopDirectoryFiles = await getFilesFromDesktop(desktopPath: desktopPath)
             print("\nArquivos no desktop: \(desktopDirectoryFiles)")
             
             let deviceDirectoryFiles = await getFilesFromDeviceApp(deviceName: device.name, devicePath: screenshotDir)
             print("\nArquivos no device: \(deviceDirectoryFiles)")
             
-            let deviceFilesDate = getDeviceFileDate(device: device, deviceDirectoryFiles: deviceDirectoryFiles, path: screenshotDir)
-            let desktopFilesDate = getDesktopFileDate(desktopPath: desktopPath, desktopDirectoryFiles: desktopDirectoryFiles)
+            let deviceFilesDate = await getDeviceFileDateApp(deviceName: device.name, deviceDirectoryFiles: deviceDirectoryFiles, path: screenshotDir)
+            let desktopFilesDate = await getDesktopFileDate(desktopPath: desktopPath, desktopDirectoryFiles: desktopDirectoryFiles)
             
             
             let task = Process()
@@ -184,17 +184,17 @@ class DeviceManager: ObservableObject {
             
             if isToggled {
                 // Manter arquivos excluídos no desktop e adicionar os novos arquivos
-                addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
+                await addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
                 
-                modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
+               await modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
                 
             } else {
                 // Sincronizar e não manter arquivos excluídos no desktop
-                addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
+               await addFilesFromDevice(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, device: device, desktopPath: desktopPath, screenshotDir: screenshotDir)
                 
-                removeFilesFromDesktop(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, desktopPath: desktopPath)
+               await removeFilesFromDesktop(deviceDirectoryFiles: deviceDirectoryFiles, desktopDirectoryFiles: desktopDirectoryFiles, desktopPath: desktopPath)
                 
-                modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
+               await modifyFilesFromDesktop(device: device, path: screenshotDir, desktopPath: desktopPath, deviceFilesDate: deviceFilesDate, desktopFilesDate: desktopFilesDate)
             }
         } else {
             print("\nDiretório não encontrado no caminho: \(screenshotDir)")
@@ -266,7 +266,7 @@ class DeviceManager: ObservableObject {
         }
     }
     
-    func getDesktopDirectoryDate(of filePath: String) -> Date? {
+    func getDesktopDirectoryDate(of filePath: String) async -> Date? {
         let fileManager = FileManager.default
         
         do {
